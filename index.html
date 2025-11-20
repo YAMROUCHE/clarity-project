@@ -2,8 +2,11 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Références Pro - Agentic Solutions</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Clarity - Gestion professionnelle</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
@@ -13,267 +16,231 @@
             box-sizing: border-box;
         }
 
-        :root {
-            --primary-color: #2563eb;
-            --primary-hover: #1d4ed8;
-            --success-color: #10b981;
-            --danger-color: #ef4444;
-            --warning-color: #f59e0b;
-            --bg-primary: #ffffff;
-            --bg-secondary: #f3f4f6;
-            --text-primary: #111827;
-            --text-secondary: #6b7280;
-            --border-color: #e5e7eb;
-        }
-
-        [data-theme="dark"] {
-            --bg-primary: #1f2937;
-            --bg-secondary: #111827;
-            --text-primary: #f9fafb;
-            --text-secondary: #9ca3af;
-            --border-color: #374151;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            transition: background 0.3s, color 0.3s;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        /* Header */
-        header {
-            background: var(--bg-primary);
-            border-bottom: 1px solid var(--border-color);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .btn {
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-size: 0.875rem;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-
-        .btn-primary {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-hover);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-        }
-
-        .btn-secondary:hover {
-            background: var(--bg-secondary);
-        }
-
-        .btn-icon {
-            background: transparent;
-            color: var(--text-secondary);
-            padding: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Landing Page */
-        .landing-page {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .hero {
-            text-align: center;
-            padding: 4rem 2rem;
-        }
-
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .hero p {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-        }
-
-        .hero-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-        }
-
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            padding: 4rem 2rem;
-        }
-
-        .feature-card {
-            background: var(--bg-primary);
-            padding: 2rem;
-            border-radius: 1rem;
-            border: 1px solid var(--border-color);
-        }
-
-        .feature-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--primary-color);
-        }
-
-        .feature-card p {
-            color: var(--text-secondary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #ffffff;
+            color: #000000;
             line-height: 1.6;
         }
 
-        .cta-section {
-            background: var(--text-primary);
-            color: var(--bg-primary);
-            padding: 4rem 2rem;
-            border-radius: 1rem;
-            text-align: center;
-            margin: 2rem 0;
-        }
-
-        .cta-section h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .cta-section p {
-            font-size: 1.125rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-        }
-
-        /* Auth Forms */
-        .auth-container {
-            max-width: 400px;
-            margin: 4rem auto;
-            padding: 2rem;
-        }
-
-        .auth-card {
-            background: var(--bg-primary);
-            padding: 2rem;
-            border-radius: 1rem;
-            border: 1px solid var(--border-color);
-        }
-
-        .auth-card h2 {
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
-            font-size: 1rem;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
-
-        .auth-switch {
-            text-align: center;
-            margin-top: 1rem;
-            color: var(--text-secondary);
-        }
-
-        .auth-switch button {
-            background: none;
-            border: none;
-            color: var(--primary-color);
-            cursor: pointer;
-            text-decoration: underline;
-        }
-
-        /* App Container */
-        .app-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .nav-tabs {
+        .landing-page {
+            min-height: 100vh;
             display: flex;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid var(--border-color);
+            flex-direction: column;
         }
 
-        .nav-tab {
-            padding: 1rem 1.5rem;
-            background: transparent;
-            border: none;
-            border-bottom: 2px solid transparent;
+        .landing-header {
+            padding: 20px 40px;
+            border-bottom: 1px solid #d0d0d0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffffff;
+        }
+
+        .landing-header h1 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .landing-nav {
+            display: flex;
+            gap: 15px;
+        }
+
+        .hero {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 20px;
+            text-align: center;
+            background: #f5f5f5;
+        }
+
+        .hero h2 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: #666;
+            max-width: 600px;
+            margin-bottom: 40px;
+        }
+
+        .features {
+            padding: 80px 40px;
+            background: #ffffff;
+        }
+
+        .features h3 {
+            font-size: 32px;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            padding: 30px;
+            border: 1px solid #d0d0d0;
+            border-radius: 8px;
+        }
+
+        .feature-card h4 {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            color: #666;
+        }
+
+        .cta-section {
+            padding: 80px 40px;
+            text-align: center;
+            background: #f5f5f5;
+        }
+
+        .cta-section h3 {
+            font-size: 32px;
+            margin-bottom: 30px;
+        }
+
+        .landing-footer {
+            padding: 40px;
+            text-align: center;
+            border-top: 1px solid #d0d0d0;
+            background: #ffffff;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: 2px solid #000000;
+            background: #ffffff;
+            color: #000000;
             cursor: pointer;
+            font-size: 16px;
+            border-radius: 6px;
+            transition: all 0.2s;
             font-weight: 500;
-            color: var(--text-secondary);
+        }
+
+        .btn:hover {
+            background: #000000;
+            color: #ffffff;
+        }
+
+        .btn-primary {
+            background: #000000;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: #333333;
+            border-color: #333333;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .btn-danger {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: #dc3545;
+            color: #ffffff;
+        }
+
+        .btn-icon {
+            padding: 8px 12px;
+            font-size: 18px;
+            border: none;
+            background: none;
+            color: #666;
+            cursor: pointer;
             transition: all 0.2s;
         }
 
-        .nav-tab.active {
-            color: var(--primary-color);
-            border-bottom-color: var(--primary-color);
+        .btn-icon:hover {
+            color: #000000;
+            background: #f5f5f5;
+        }
+
+        .app-container {
+            display: none;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        .app-header {
+            background: #ffffff;
+            border-bottom: 1px solid #d0d0d0;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+        }
+
+        .app-header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .tabs {
+            background: #f5f5f5;
+            border-bottom: 1px solid #d0d0d0;
+            padding: 0 40px;
+            display: flex;
+            gap: 0;
+        }
+
+        .tab {
+            padding: 15px 30px;
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 15px;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            color: #000000;
+            border-bottom-color: #000000;
+            font-weight: 500;
+        }
+
+        .tab:hover {
+            color: #000000;
+        }
+
+        .content {
+            flex: 1;
+            padding: 40px;
+            background: #ffffff;
         }
 
         .tab-content {
@@ -284,891 +251,1598 @@
             display: block;
         }
 
-        /* Upload Zone */
         .upload-zone {
-            border: 2px dashed var(--border-color);
-            border-radius: 1rem;
-            padding: 3rem;
+            border: 2px dashed #d0d0d0;
+            border-radius: 8px;
+            padding: 60px;
             text-align: center;
-            margin-bottom: 2rem;
-            background: var(--bg-primary);
             cursor: pointer;
             transition: all 0.2s;
+            background: #f5f5f5;
+            margin-bottom: 30px;
         }
 
         .upload-zone:hover {
-            border-color: var(--primary-color);
-            background: var(--bg-secondary);
+            border-color: #000000;
+            background: #ececec;
         }
 
         .upload-zone.dragover {
-            border-color: var(--primary-color);
-            background: var(--bg-secondary);
+            border-color: #000000;
+            background: #e0e0e0;
         }
 
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
+        .search-container {
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        .stat-card {
-            background: var(--bg-primary);
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            border: 1px solid var(--border-color);
-        }
-
-        .stat-label {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-
-        /* Table */
-        .table-container {
-            background: var(--bg-primary);
-            border-radius: 0.5rem;
-            border: 1px solid var(--border-color);
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        thead {
-            background: var(--bg-secondary);
-        }
-
-        th, td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        th {
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        tbody tr:hover {
-            background: var(--bg-secondary);
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-secondary);
-            border-top: 1px solid var(--border-color);
-            margin-top: 4rem;
-        }
-
-        footer a {
-            color: var(--primary-color);
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* Alert */
-        .alert {
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .alert-success {
-            background: #d1fae5;
-            color: #065f46;
-            border: 1px solid #10b981;
-        }
-
-        .alert-error {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #ef4444;
-        }
-
-        /* Language Selector */
-        .lang-selector {
+        .search-wrapper {
+            flex: 1;
             position: relative;
         }
 
-        .lang-selector select {
-            padding: 0.5rem 2rem 0.5rem 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            cursor: pointer;
-            font-size: 0.875rem;
+        .search-input {
+            width: 100%;
+            padding: 12px 45px 12px 40px;
+            border: 2px solid #d0d0d0;
+            border-radius: 6px;
+            font-size: 15px;
+            transition: all 0.2s;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2rem;
+        .search-input:focus {
+            outline: none;
+            border-color: #000000;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 18px;
+            pointer-events: none;
+        }
+
+        .clear-search {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px 8px;
+            display: none;
+            line-height: 1;
+        }
+
+        .clear-search.show {
+            display: block;
+        }
+
+        .clear-search:hover {
+            color: #000000;
+        }
+
+        .search-results-info {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .no-results-message {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .no-results-message p {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .no-results-message small {
+            font-size: 14px;
+            color: #999;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            border: 1px solid #d0d0d0;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #d0d0d0;
+        }
+
+        .data-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+
+        .data-table tr:hover {
+            background: #fafafa;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            padding: 20px;
+            border: 1px solid #d0d0d0;
+            border-radius: 8px;
+            background: #f5f5f5;
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .stat-card p {
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .dashboard-card {
+            padding: 30px;
+            border: 1px solid #d0d0d0;
+            border-radius: 8px;
+            background: #f5f5f5;
+        }
+
+        .dashboard-card h3 {
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .dashboard-card .value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-card .subtext {
+            font-size: 14px;
+            color: #999;
+        }
+
+        .category-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #d0d0d0;
+            background: #ffffff;
+        }
+
+        .category-table th,
+        .category-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #d0d0d0;
+        }
+
+        .category-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            color: #666;
+        }
+
+        .category-table tr:hover {
+            background: #fafafa;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            font-size: 15px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #000000;
+        }
+
+        .form-group input:disabled {
+            background: #f5f5f5;
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        .settings-section {
+            margin-bottom: 40px;
+            padding: 30px;
+            border: 1px solid #d0d0d0;
+            border-radius: 8px;
+            background: #f5f5f5;
+        }
+
+        .settings-section h3 {
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .logo-preview {
+            margin-top: 15px;
+            padding: 20px;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            background: #ffffff;
+            display: none;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo-preview.show {
+            display: flex;
+        }
+
+        .logo-preview img {
+            max-width: 200px;
+            max-height: 100px;
+            object-fit: contain;
+        }
+
+        .logo-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .invoice-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
+            background: #ffffff;
+            border: 1px solid #d0d0d0;
+            border-radius: 8px;
+        }
+
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #000000;
+        }
+
+        .invoice-logo {
+            max-width: 200px;
+            max-height: 80px;
+            object-fit: contain;
+        }
+
+        .invoice-title {
+            text-align: right;
+        }
+
+        .invoice-title h2 {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .invoice-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .info-block h4 {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .invoice-table {
+            width: 100%;
+            margin-bottom: 30px;
+            border-collapse: collapse;
+        }
+
+        .invoice-table th {
+            background: #f5f5f5;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #000000;
+        }
+
+        .invoice-table td {
+            padding: 12px;
+            border-bottom: 1px solid #d0d0d0;
+        }
+
+        .invoice-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .invoice-totals {
+            margin-left: auto;
+            width: 300px;
+        }
+
+        .invoice-totals-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #d0d0d0;
+        }
+
+        .invoice-totals-row:last-child {
+            border-bottom: none;
+            font-size: 20px;
+            font-weight: 700;
+            padding-top: 15px;
+            border-top: 2px solid #000000;
+        }
+
+        .invoice-actions {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-content.large {
+            max-width: 1000px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-header h2 {
+            font-size: 24px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-body {
+            margin-bottom: 30px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .delete-warning {
+            padding: 20px;
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .delete-warning p {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .delete-warning strong {
+            display: block;
+            margin-top: 15px;
+            color: #000000;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+
+        .mb-30 {
+            margin-bottom: 30px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
             }
-            
-            .hero-actions {
+            .invoice-container, .invoice-container * {
+                visibility: visible;
+            }
+            .invoice-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .invoice-actions {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .landing-header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+
+            .landing-header h1 {
+                font-size: 20px;
+                text-align: center;
+            }
+
+            .landing-nav {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .hero {
+                padding: 40px 20px;
+            }
+
+            .hero h2 {
+                font-size: 32px;
+            }
+
+            .hero p {
+                font-size: 18px;
+            }
+
+            .features {
+                padding: 40px 20px;
+            }
+
+            .features h3 {
+                font-size: 24px;
+                margin-bottom: 30px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .cta-section {
+                padding: 40px 20px;
+            }
+
+            .cta-section h3 {
+                font-size: 24px;
+            }
+
+            .app-header {
+                padding: 0 20px;
+                height: auto;
+                min-height: 60px;
+                flex-direction: column;
+                gap: 10px;
+                padding-top: 15px;
+                padding-bottom: 15px;
+            }
+
+            .app-header h1 {
+                font-size: 18px;
+            }
+
+            .user-info {
+                flex-direction: column;
+                width: 100%;
+                gap: 10px;
+            }
+
+            .user-info span {
+                font-size: 14px;
+            }
+
+            .tabs {
+                padding: 0 10px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .tab {
+                padding: 12px 20px;
+                font-size: 14px;
+                white-space: nowrap;
+            }
+
+            .content {
+                padding: 20px 15px;
+            }
+
+            .content h2 {
+                font-size: 22px;
+                margin-bottom: 20px;
+            }
+
+            .stats, .dashboard-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+
+            .stat-card, .dashboard-card {
+                padding: 15px;
+            }
+
+            .stat-card h3, .dashboard-card h3 {
+                font-size: 12px;
+            }
+
+            .stat-card p {
+                font-size: 22px;
+            }
+
+            .dashboard-card .value {
+                font-size: 28px;
+            }
+
+            .upload-zone {
+                padding: 40px 20px;
+                margin-bottom: 20px;
+            }
+
+            .upload-zone p {
+                font-size: 16px;
+            }
+
+            .search-container {
+                flex-direction: column;
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+
+            .search-input {
+                padding: 14px 45px 14px 40px;
+                font-size: 16px;
+            }
+
+            .data-table, .category-table {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                white-space: nowrap;
+            }
+
+            .data-table th,
+            .data-table td,
+            .category-table th,
+            .category-table td {
+                padding: 10px 8px;
+                font-size: 14px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .btn {
+                padding: 14px 24px;
+                font-size: 16px;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .btn-small {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+
+            .form-group {
+                margin-bottom: 15px;
+            }
+
+            .form-group label {
+                font-size: 14px;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                padding: 14px;
+                font-size: 16px;
+            }
+
+            .settings-section {
+                padding: 20px 15px;
+                margin-bottom: 20px;
+            }
+
+            .settings-section h3 {
+                font-size: 18px;
+                margin-bottom: 15px;
+            }
+
+            .invoice-container {
+                padding: 20px 15px;
+                max-width: 100%;
+            }
+
+            .invoice-header {
+                flex-direction: column;
+                gap: 20px;
+                margin-bottom: 30px;
+            }
+
+            .invoice-title {
+                text-align: left;
+            }
+
+            .invoice-title h2 {
+                font-size: 24px;
+            }
+
+            .invoice-info {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                margin-bottom: 30px;
+            }
+
+            .invoice-table {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .invoice-table th,
+            .invoice-table td {
+                padding: 10px 8px;
+                font-size: 13px;
+            }
+
+            .invoice-totals {
+                width: 100%;
+            }
+
+            .invoice-actions {
                 flex-direction: column;
             }
-            
-            .features {
+
+            .modal-content {
+                width: 95%;
+                padding: 30px 20px;
+                max-height: 85vh;
+            }
+
+            .modal-content.large {
+                max-width: 95%;
+            }
+
+            .modal-header h2 {
+                font-size: 20px;
+            }
+
+            .modal-footer {
+                flex-direction: column;
+            }
+
+            .header-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .logo-preview {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .logo-preview img {
+                max-width: 100%;
+            }
+
+            .logo-actions {
+                width: 100%;
+            }
+
+            .logo-actions button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h2 {
+                font-size: 26px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .stats, .dashboard-grid {
                 grid-template-columns: 1fr;
             }
-            
-            .nav-tabs {
-                overflow-x: auto;
+
+            .invoice-title h2 {
+                font-size: 20px;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                font-size: 16px;
+            }
+        }
+
+        @media (max-height: 500px) and (orientation: landscape) {
+            .hero {
+                padding: 30px 20px;
+            }
+
+            .features {
+                padding: 30px 20px;
+            }
+
+            .cta-section {
+                padding: 30px 20px;
+            }
+        }
+
+        @media (hover: none) and (pointer: coarse) {
+            .btn:active {
+                transform: scale(0.98);
+                opacity: 0.9;
+            }
+
+            .tab:active {
+                background: #e0e0e0;
+            }
+
+            .upload-zone:active {
+                background: #e0e0e0;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <div class="logo">Références Pro</div>
-        <div class="header-actions">
-            <div class="lang-selector">
-                <select id="langSelector">
-                    <option value="fr">Français</option>
-                    <option value="en">English</option>
-                    <option value="es">Español</option>
-                </select>
-            </div>
-            <button class="btn btn-icon" id="themeToggle" title="Changer le thème">
-                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
-                </svg>
-            </button>
-            <button class="btn btn-secondary" id="loginBtn">Connexion</button>
-            <button class="btn btn-primary" id="signupBtn">Créer un compte</button>
-            <button class="btn btn-secondary hidden" id="logoutBtn">Déconnexion</button>
-        </div>
-    </header>
+    <div class="landing-page" id="landingPage">
+        <header class="landing-header">
+            <h1>Clarity</h1>
+            <nav class="landing-nav">
+                <button class="btn" onclick="showLoginModal()">Connexion</button>
+                <button class="btn btn-primary" onclick="showSignupModal()">Créer un compte</button>
+            </nav>
+        </header>
 
-    <!-- Landing Page - VISIBLE PAR DÉFAUT -->
-    <div id="landing-page" class="landing-page">
         <section class="hero">
-            <h1 data-i18n="hero.title">Gestion professionnelle de vos références et factures</h1>
-            <p data-i18n="hero.subtitle">Importez vos produits depuis Excel, générez des références uniques et créez des factures professionnelles en quelques clics.</p>
-            <div class="hero-actions">
-                <button class="btn btn-primary" id="heroSignupBtn" data-i18n="hero.cta">Commencer gratuitement</button>
-                <button class="btn btn-secondary" id="heroLearnMoreBtn" data-i18n="hero.learn_more">En savoir plus</button>
-            </div>
+            <h2>Gestion professionnelle de vos références et factures</h2>
+            <p>Importez vos produits depuis Excel, générez des références uniques et créez des factures professionnelles en quelques clics.</p>
+            <button class="btn btn-primary" onclick="showSignupModal()">Commencer gratuitement</button>
         </section>
 
         <section class="features">
-            <div class="feature-card">
-                <h3 data-i18n="features.references.title">📝 Références uniques</h3>
-                <p data-i18n="features.references.desc">Importez vos produits depuis Excel et générez automatiquement des références uniques et personnalisées pour chaque article.</p>
-            </div>
-            <div class="feature-card">
-                <h3 data-i18n="features.invoicing.title">📄 Facturation professionnelle</h3>
-                <p data-i18n="features.invoicing.desc">Créez des factures professionnelles en quelques clics avec calcul automatique de la TVA et gestion des clients.</p>
-            </div>
-            <div class="feature-card">
-                <h3 data-i18n="features.cloud.title">☁️ Base de données cloud</h3>
-                <p data-i18n="features.cloud.desc">Vos données sont sauvegardées de manière sécurisée dans le cloud. Accédez-y depuis n'importe où, à tout moment.</p>
-            </div>
-        </section>
-
-        <section class="features">
-            <div class="feature-card">
-                <h3 data-i18n="features.free.title">✅ 100% Gratuit</h3>
-                <p data-i18n="features.free.desc">Aucun frais caché, aucun abonnement. Profitez de toutes les fonctionnalités gratuitement.</p>
-            </div>
-            <div class="feature-card">
-                <h3 data-i18n="features.secure.title">🔒 Sécurisé</h3>
-                <p data-i18n="features.secure.desc">Chiffrement 256-bit pour protéger vos données. Authentification sécurisée et conformité RGPD.</p>
-            </div>
-            <div class="feature-card">
-                <h3 data-i18n="features.easy.title">⚡ Facile à utiliser</h3>
-                <p data-i18n="features.easy.desc">Interface intuitive et moderne. Commencez en quelques minutes sans formation.</p>
+            <h3>Fonctionnalités</h3>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h4>Import Excel</h4>
+                    <p>Importez facilement vos produits depuis un fichier Excel avec toutes leurs informations.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Références uniques</h4>
+                    <p>Générez automatiquement des références uniques pour chaque produit.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Facturation</h4>
+                    <p>Créez des factures professionnelles avec logo, TVA et calculs automatiques.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Historique</h4>
+                    <p>Consultez et réimprimez toutes vos factures passées en quelques clics.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Carnet clients</h4>
+                    <p>Gérez vos clients et utilisez l'auto-complétion pour gagner du temps.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Sauvegarde cloud</h4>
+                    <p>Toutes vos données sont sauvegardées de manière sécurisée dans le cloud.</p>
+                </div>
             </div>
         </section>
 
         <section class="cta-section">
-            <h2 data-i18n="cta.title">Prêt à commencer ?</h2>
-            <p data-i18n="cta.subtitle">Rejoignez des centaines d'entreprises qui font confiance à Références Pro</p>
-            <button class="btn btn-primary" id="ctaSignupBtn" data-i18n="cta.button">Créer un compte gratuit</button>
+            <h3>Prêt à commencer ?</h3>
+            <button class="btn btn-primary" onclick="showSignupModal()">Créer un compte gratuit</button>
         </section>
+
+        <footer class="landing-footer">
+            <p>Développé par <a href="https://agenticsolutions.fr" target="_blank" style="color: #000000; text-decoration: none; font-weight: 500;">Agentic Solutions</a></p>
+        </footer>
     </div>
 
-    <!-- Auth Page - CACHÉ PAR DÉFAUT -->
-    <div id="auth-page" class="auth-container hidden">
-        <!-- Login Form -->
-        <div id="login-form" class="auth-card hidden">
-            <h2 data-i18n="auth.login.title">Connexion</h2>
-            <div class="form-group">
-                <label data-i18n="auth.email">Email</label>
-                <input type="email" id="loginEmail" required>
+    <div class="app-container" id="appContainer">
+        <header class="app-header">
+            <h1>Clarity</h1>
+            <div class="user-info">
+                <span id="userEmail"></span>
+                <button class="btn-icon" onclick="showSettingsModal()" title="Paramètres">⚙</button>
+                <button class="btn" onclick="logout()">Déconnexion</button>
             </div>
-            <div class="form-group">
-                <label data-i18n="auth.password">Mot de passe</label>
-                <input type="password" id="loginPassword" required>
-            </div>
-            <button class="btn btn-primary" style="width: 100%;" id="loginSubmit" data-i18n="auth.login.button">Se connecter</button>
-            <div class="auth-switch">
-                <span data-i18n="auth.login.no_account">Pas de compte ?</span>
-                <button id="switchToSignup" data-i18n="auth.login.signup_link">Créer un compte</button>
-            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('dashboard')">Dashboard</button>
+            <button class="tab" onclick="switchTab('references')">Références</button>
+            <button class="tab" onclick="switchTab('facturation')">Facturation</button>
+            <button class="tab" onclick="switchTab('historique')">Historique</button>
+            <button class="tab" onclick="switchTab('clients')">Clients</button>
         </div>
 
-        <!-- Signup Form -->
-        <div id="signup-form" class="auth-card hidden">
-            <h2 data-i18n="auth.signup.title">Créer un compte</h2>
-            <div class="form-group">
-                <label data-i18n="auth.email">Email</label>
-                <input type="email" id="signupEmail" required>
-            </div>
-            <div class="form-group">
-                <label data-i18n="auth.password">Mot de passe</label>
-                <input type="password" id="signupPassword" required>
-            </div>
-            <div class="form-group">
-                <label data-i18n="auth.signup.confirm_password">Confirmer le mot de passe</label>
-                <input type="password" id="signupPasswordConfirm" required>
-            </div>
-            <button class="btn btn-primary" style="width: 100%;" id="signupSubmit" data-i18n="auth.signup.button">Créer mon compte</button>
-            <div class="auth-switch">
-                <span data-i18n="auth.signup.has_account">Déjà un compte ?</span>
-                <button id="switchToLogin" data-i18n="auth.signup.login_link">Se connecter</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- App Page - CACHÉ PAR DÉFAUT -->
-    <div id="app-page" class="app-container hidden">
-        <!-- Navigation Tabs -->
-        <div class="nav-tabs">
-            <button class="nav-tab active" data-tab="references" data-i18n="tabs.references">Références</button>
-            <button class="nav-tab" data-tab="invoicing" data-i18n="tabs.invoicing">Facturation</button>
-        </div>
-
-        <!-- References Tab -->
-        <div id="tab-references" class="tab-content active">
-            <div class="upload-zone" id="uploadZone">
-                <svg width="48" height="48" fill="currentColor" style="margin-bottom: 1rem;">
-                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"/>
-                </svg>
-                <p data-i18n="upload.title">Glissez-déposez votre fichier Excel ici ou cliquez pour sélectionner</p>
-                <input type="file" id="fileInput" accept=".xlsx,.xls" style="display: none;">
-            </div>
-
-            <div id="statsContainer" class="stats-grid hidden">
-                <div class="stat-card">
-                    <div class="stat-label" data-i18n="stats.total">Produits totaux</div>
-                    <div class="stat-value" id="totalProducts">0</div>
+        <div class="content">
+            <!-- DASHBOARD -->
+            <div class="tab-content active" id="tab-dashboard">
+                <h2 class="mb-30">Tableau de bord</h2>
+                
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <h3>Chiffre d'affaires</h3>
+                        <div class="value" id="dashboardCA">0€</div>
+                        <div class="subtext">CA total potentiel</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Produits en stock</h3>
+                        <div class="value" id="dashboardStock">0</div>
+                        <div class="subtext">Références actives</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Marge moyenne</h3>
+                        <div class="value" id="dashboardMarge">0%</div>
+                        <div class="subtext">Sur l'ensemble des produits</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Prix moyen</h3>
+                        <div class="value" id="dashboardPrixMoyen">0€</div>
+                        <div class="subtext">Prix de vente moyen</div>
+                    </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-label" data-i18n="stats.avg_price">Prix moyen HT</div>
-                    <div class="stat-value" id="avgPrice">0€</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label" data-i18n="stats.last_update">Dernière mise à jour</div>
-                    <div class="stat-value" id="lastUpdate">-</div>
-                </div>
-            </div>
 
-            <div id="productsTable" class="table-container hidden">
-                <table>
+                <h3 class="mb-20">Répartition par catégorie</h3>
+                <table class="category-table">
                     <thead>
                         <tr>
-                            <th>Référence</th>
-                            <th>Désignation</th>
-                            <th>Prix d'achat HT</th>
-                            <th>Prix de vente HT</th>
-                            <th>EAN</th>
+                            <th>Catégorie</th>
+                            <th>Nb produits</th>
+                            <th class="text-right">CA potentiel</th>
+                            <th class="text-right">Prix d'achat</th>
+                            <th class="text-right">Marge %</th>
                         </tr>
                     </thead>
-                    <tbody id="productsTableBody"></tbody>
+                    <tbody id="categoryTableBody">
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 30px; color: #999;">
+                                Aucune donnée disponible. Importez vos produits pour voir les statistiques.
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
-        </div>
 
-        <!-- Invoicing Tab -->
-        <div id="tab-invoicing" class="tab-content">
-            <div class="auth-card">
-                <h2 data-i18n="invoicing.title">Créer une facture</h2>
-                <div id="invoiceFormContainer">
-                    <p data-i18n="invoicing.no_products">Fonctionnalité disponible après import des produits</p>
+            <!-- RÉFÉRENCES -->
+            <div class="tab-content" id="tab-references">
+                <h2 class="mb-30">Gestion des références produits</h2>
+                
+                <div class="stats" id="stats">
+                    <div class="stat-card">
+                        <h3>Total produits</h3>
+                        <p id="totalProducts">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Prix d'achat moyen</h3>
+                        <p id="avgPurchase">0€</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Prix de vente moyen</h3>
+                        <p id="avgSelling">0€</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Marge moyenne</h3>
+                        <p id="avgMargin">0%</p>
+                    </div>
+                </div>
+
+                <div class="upload-zone" id="uploadZone">
+                    <input type="file" id="fileInput" accept=".xlsx,.xls" style="display: none;">
+                    <p style="font-size: 18px; margin-bottom: 10px;">Glissez-déposez votre fichier Excel ici</p>
+                    <p style="color: #666;">ou cliquez pour sélectionner un fichier</p>
+                </div>
+
+                <div class="search-container" id="searchContainer" style="display: none;">
+                    <div class="search-wrapper">
+                        <span class="search-icon">⌕</span>
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            class="search-input" 
+                            placeholder="Rechercher par référence, désignation ou EAN..."
+                        >
+                        <button class="clear-search" id="clearSearch" title="Effacer la recherche">×</button>
+                    </div>
+                </div>
+
+                <div id="searchResultsInfo" class="search-results-info" style="display: none;"></div>
+
+                <div id="dataTableContainer"></div>
+            </div>
+
+            <!-- FACTURATION -->
+            <div class="tab-content" id="tab-facturation">
+                <h2 class="mb-30">Créer une facture</h2>
+                
+                <div class="form-group">
+                    <label>Sélectionner un client</label>
+                    <select id="clientSelect" onchange="onClientSelect()">
+                        <option value="">Nouveau client (saisie manuelle)...</option>
+                    </select>
+                </div>
+
+                <div id="manualClientFields">
+                    <div class="form-group">
+                        <label>Nom du client</label>
+                        <input type="text" id="clientName" placeholder="Nom du client">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Adresse du client</label>
+                        <textarea id="clientAddress" rows="3" placeholder="Adresse complète"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Sélectionner un produit</label>
+                    <select id="productSelect">
+                        <option value="">Choisir un produit...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Quantité</label>
+                    <input type="number" id="quantity" value="1" min="1">
+                </div>
+
+                <button class="btn btn-primary" onclick="addToInvoice()">Ajouter à la facture</button>
+
+                <div id="invoicePreview" class="hidden">
+                    <div class="invoice-container" id="invoiceToPrint">
+                        <div class="invoice-header">
+                            <div>
+                                <img id="invoiceLogo" class="invoice-logo hidden" src="" alt="Logo">
+                            </div>
+                            <div class="invoice-title">
+                                <h2>FACTURE</h2>
+                                <p id="invoiceNumber">N° FACT-001</p>
+                                <p id="invoiceDate"></p>
+                            </div>
+                        </div>
+
+                        <div class="invoice-info">
+                            <div class="info-block">
+                                <h4>De</h4>
+                                <div id="companyInfo">
+                                    <p><strong id="companyNameInvoice">Votre entreprise</strong></p>
+                                    <p id="companyAddressInvoice">Adresse</p>
+                                    <p id="companySiretInvoice">SIRET: </p>
+                                    <p id="companyPhoneInvoice">Tél: </p>
+                                    <p id="companyEmailInvoice">Email: </p>
+                                </div>
+                            </div>
+                            <div class="info-block">
+                                <h4>À</h4>
+                                <div id="clientInfo"></div>
+                            </div>
+                        </div>
+
+                        <table class="invoice-table">
+                            <thead>
+                                <tr>
+                                    <th>Désignation</th>
+                                    <th style="text-align: center;">Quantité</th>
+                                    <th style="text-align: right;">Prix HT</th>
+                                    <th style="text-align: right;">Total HT</th>
+                                </tr>
+                            </thead>
+                            <tbody id="invoiceItems"></tbody>
+                        </table>
+
+                        <div class="invoice-totals">
+                            <div class="invoice-totals-row">
+                                <span>Total HT</span>
+                                <span id="invoiceTotalHT">0.00€</span>
+                            </div>
+                            <div class="invoice-totals-row">
+                                <span>TVA (<span id="taxRateDisplay">20</span>%)</span>
+                                <span id="invoiceTVA">0.00€</span>
+                            </div>
+                            <div class="invoice-totals-row">
+                                <span>Total TTC</span>
+                                <span id="invoiceTotalTTC">0.00€</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="invoice-actions">
+                        <button class="btn" onclick="window.print()">Imprimer</button>
+                        <button class="btn btn-primary" onclick="saveAndResetInvoice()">Sauvegarder et nouvelle facture</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HISTORIQUE -->
+            <div class="tab-content" id="tab-historique">
+                <h2 class="mb-30">Historique des factures</h2>
+
+                <div class="search-container" id="searchInvoicesContainer" style="display: none;">
+                    <div class="search-wrapper">
+                        <span class="search-icon">⌕</span>
+                        <input 
+                            type="text" 
+                            id="searchInvoicesInput" 
+                            class="search-input" 
+                            placeholder="Rechercher par N° de facture ou nom de client..."
+                        >
+                        <button class="clear-search" id="clearSearchInvoices" title="Effacer la recherche">×</button>
+                    </div>
+                </div>
+
+                <div id="searchInvoicesResultsInfo" class="search-results-info" style="display: none;"></div>
+
+                <div id="invoicesTableContainer"></div>
+            </div>
+
+            <!-- CLIENTS -->
+            <div class="tab-content" id="tab-clients">
+                <div class="header-actions">
+                    <h2>Carnet d'adresses clients</h2>
+                    <button class="btn btn-primary" onclick="showAddClientModal()">+ Ajouter un client</button>
+                </div>
+
+                <div class="search-container" id="searchClientsContainer" style="display: none;">
+                    <div class="search-wrapper">
+                        <span class="search-icon">⌕</span>
+                        <input 
+                            type="text" 
+                            id="searchClientsInput" 
+                            class="search-input" 
+                            placeholder="Rechercher par nom, email ou téléphone..."
+                        >
+                        <button class="clear-search" id="clearSearchClients" title="Effacer la recherche">×</button>
+                    </div>
+                </div>
+
+                <div id="searchClientsResultsInfo" class="search-results-info" style="display: none;"></div>
+
+                <div id="clientsTableContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Connexion -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Connexion</h2>
+                <button class="close-modal" onclick="closeLoginModal()">×</button>
+            </div>
+            <form onsubmit="login(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Mot de passe</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Se connecter</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Inscription -->
+    <div class="modal" id="signupModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Créer un compte</h2>
+                <button class="close-modal" onclick="closeSignupModal()">×</button>
+            </div>
+            <form onsubmit="signup(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="signupEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Mot de passe</label>
+                    <input type="password" id="signupPassword" required minlength="6">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Créer mon compte</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Édition Produit -->
+    <div class="modal" id="editProductModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Éditer le produit</h2>
+                <button class="close-modal" onclick="closeEditModal()">×</button>
+            </div>
+            <form onsubmit="updateProduct(event)">
+                <input type="hidden" id="editProductId">
+                
+                <div class="form-group">
+                    <label>Référence</label>
+                    <input type="text" id="editReference" disabled>
+                    <small style="color: #666; font-size: 13px;">La référence ne peut pas être modifiée</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Désignation</label>
+                    <input type="text" id="editDesignation" required>
+                </div>
+
+                <div class="form-group">
+                    <label>EAN</label>
+                    <input type="text" id="editEan" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Prix d'achat HT (€)</label>
+                    <input type="number" id="editPurchasePrice" step="0.01" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Prix de vente HT (€)</label>
+                    <input type="number" id="editSellingPrice" step="0.01" min="0" required>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn" onclick="closeEditModal()">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Confirmation Suppression Produit -->
+    <div class="modal" id="deleteConfirmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Confirmer la suppression</h2>
+                <button class="close-modal" onclick="closeDeleteModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="delete-warning">
+                    <p><strong>Attention :</strong> Vous êtes sur le point de supprimer ce produit :</p>
+                    <strong id="deleteProductInfo"></strong>
+                </div>
+                <p style="color: #666; margin-bottom: 20px;">Cette action est irréversible. Êtes-vous sûr de vouloir continuer ?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" onclick="closeDeleteModal()">Annuler</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDelete()">Supprimer définitivement</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Paramètres -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h2>Paramètres</h2>
+                <button class="close-modal" onclick="closeSettingsModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h3>Informations de l'entreprise</h3>
+                    
+                    <div class="form-group">
+                        <label>Logo de l'entreprise</label>
+                        <input type="file" id="logoInput" accept="image/*">
+                        <div class="logo-preview" id="logoPreview">
+                            <img id="logoPreviewImg" src="" alt="Logo">
+                            <div class="logo-actions">
+                                <button class="btn" onclick="removeLogo()">Supprimer</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nom de l'entreprise</label>
+                        <input type="text" id="settingsCompanyName" placeholder="Votre entreprise">
+                    </div>
+
+                    <div class="form-group">
+                        <label>SIRET</label>
+                        <input type="text" id="settingsSiret" placeholder="123 456 789 00012">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Adresse</label>
+                        <textarea id="settingsAddress" rows="3" placeholder="Adresse complète"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Téléphone</label>
+                        <input type="tel" id="settingsPhone" placeholder="01 23 45 67 89">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="settingsEmail" placeholder="contact@entreprise.fr">
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>Paramètres TVA</h3>
+                    
+                    <div class="form-group">
+                        <label>Taux de TVA</label>
+                        <select id="settingsTaxRate">
+                            <option value="0">0%</option>
+                            <option value="5.5">5.5%</option>
+                            <option value="10">10%</option>
+                            <option value="20" selected>20%</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Numéro de TVA intracommunautaire</label>
+                        <input type="text" id="settingsTaxIntra" placeholder="FR12345678901">
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>Paramètres de facturation</h3>
+                    
+                    <div class="form-group">
+                        <label>Préfixe des factures</label>
+                        <input type="text" id="settingsInvoicePrefix" placeholder="FACT-" value="FACT-">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Numéro de départ</label>
+                        <input type="number" id="settingsInvoiceStart" value="1" min="1">
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="saveSettings()">Enregistrer les paramètres</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Voir Facture -->
+    <div class="modal" id="viewInvoiceModal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h2>Détail de la facture</h2>
+                <button class="close-modal" onclick="closeViewInvoiceModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="viewInvoiceContainer"></div>
+                <div class="invoice-actions">
+                    <button class="btn" onclick="printViewedInvoice()">Imprimer</button>
+                    <button class="btn" onclick="closeViewInvoiceModal()">Fermer</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <p>© 2025 <span data-i18n="footer.app_name">Références Pro</span></p>
-        <p data-i18n="footer.powered_by">Propulsé par <a href="https://agenticsolutions.fr" target="_blank">Agentic Solutions</a></p>
-    </footer>
+    <!-- Modal Ajouter/Éditer Client -->
+    <div class="modal" id="clientModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="clientModalTitle">Ajouter un client</h2>
+                <button class="close-modal" onclick="closeClientModal()">×</button>
+            </div>
+            <form onsubmit="saveClient(event)">
+                <input type="hidden" id="editClientId">
+                
+                <div class="form-group">
+                    <label>Nom du client *</label>
+                    <input type="text" id="clientNameModal" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Adresse *</label>
+                    <textarea id="clientAddressModal" rows="3" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="clientEmailModal">
+                </div>
+
+                <div class="form-group">
+                    <label>Téléphone</label>
+                    <input type="tel" id="clientPhoneModal">
+                </div>
+
+                <div class="form-group">
+                    <label>SIRET</label>
+                    <input type="text" id="clientSiretModal">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn" onclick="closeClientModal()">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Confirmation Suppression Client -->
+    <div class="modal" id="deleteClientModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Confirmer la suppression</h2>
+                <button class="close-modal" onclick="closeDeleteClientModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="delete-warning">
+                    <p><strong>Attention :</strong> Vous êtes sur le point de supprimer ce client :</p>
+                    <strong id="deleteClientInfo"></strong>
+                </div>
+                <p style="color: #666; margin-bottom: 20px;">Cette action est irréversible. Êtes-vous sûr de vouloir continuer ?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" onclick="closeDeleteClientModal()">Annuler</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDeleteClient()">Supprimer définitivement</button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // Configuration Supabase
         const SUPABASE_URL = 'https://zvorgatgfxdrchtgfkqm.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp2b3JnYXRnZnhkcmNodGdma3FtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg5MTcxMDYsImV4cCI6MjA0NDQ5MzEwNn0.1Q3kZQ_bAh3qg2hSFc_gPzZczA4UjpfqFhTQT7H19iA';
-
-        // Initialisation Supabase - CORRECTION DU BUG
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp2b3JnYXRnZnhkcmNodGdma3FtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA1MzExNzUsImV4cCI6MjA3NjEwNzE3NX0.oSg2Qaa1u22PxkcIz_8n9wVIN_aIFQMDCVijBSAP00Y';
+        
         const { createClient } = window.supabase;
-        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // Variables globales
         let currentUser = null;
-        let products = [];
+        let productsData = [];
+        let filteredProducts = [];
+        let invoicesData = [];
+        let filteredInvoices = [];
+        let clientsData = [];
+        let filteredClients = [];
+        let searchTimeout = null;
+        let invoiceItems = [];
+        let currentInvoiceData = null;
+        let productToDelete = null;
+        let clientToDelete = null;
 
-        // Traductions
-        const translations = {
-            fr: {
-                "hero.title": "Gestion professionnelle de vos références et factures",
-                "hero.subtitle": "Importez vos produits depuis Excel, générez des références uniques et créez des factures professionnelles en quelques clics.",
-                "hero.cta": "Commencer gratuitement",
-                "hero.learn_more": "En savoir plus",
-                "features.references.title": "📝 Références uniques",
-                "features.references.desc": "Importez vos produits depuis Excel et générez automatiquement des références uniques et personnalisées pour chaque article.",
-                "features.invoicing.title": "📄 Facturation professionnelle",
-                "features.invoicing.desc": "Créez des factures professionnelles en quelques clics avec calcul automatique de la TVA et gestion des clients.",
-                "features.cloud.title": "☁️ Base de données cloud",
-                "features.cloud.desc": "Vos données sont sauvegardées de manière sécurisée dans le cloud. Accédez-y depuis n'importe où, à tout moment.",
-                "features.free.title": "✅ 100% Gratuit",
-                "features.free.desc": "Aucun frais caché, aucun abonnement. Profitez de toutes les fonctionnalités gratuitement.",
-                "features.secure.title": "🔒 Sécurisé",
-                "features.secure.desc": "Chiffrement 256-bit pour protéger vos données. Authentification sécurisée et conformité RGPD.",
-                "features.easy.title": "⚡ Facile à utiliser",
-                "features.easy.desc": "Interface intuitive et moderne. Commencez en quelques minutes sans formation.",
-                "cta.title": "Prêt à commencer ?",
-                "cta.subtitle": "Rejoignez des centaines d'entreprises qui font confiance à Références Pro",
-                "cta.button": "Créer un compte gratuit",
-                "auth.login.title": "Connexion",
-                "auth.signup.title": "Créer un compte",
-                "auth.email": "Email",
-                "auth.password": "Mot de passe",
-                "auth.signup.confirm_password": "Confirmer le mot de passe",
-                "auth.login.button": "Se connecter",
-                "auth.signup.button": "Créer mon compte",
-                "auth.login.no_account": "Pas de compte ?",
-                "auth.login.signup_link": "Créer un compte",
-                "auth.signup.has_account": "Déjà un compte ?",
-                "auth.signup.login_link": "Se connecter",
-                "tabs.references": "Références",
-                "tabs.invoicing": "Facturation",
-                "upload.title": "Glissez-déposez votre fichier Excel ici ou cliquez pour sélectionner",
-                "stats.total": "Produits totaux",
-                "stats.avg_price": "Prix moyen HT",
-                "stats.last_update": "Dernière mise à jour",
-                "invoicing.title": "Créer une facture",
-                "invoicing.no_products": "Fonctionnalité disponible après import des produits",
-                "footer.app_name": "Références Pro",
-                "footer.powered_by": "Propulsé par"
-            },
-            en: {
-                "hero.title": "Professional Management of Your References and Invoices",
-                "hero.subtitle": "Import your products from Excel, generate unique references and create professional invoices in just a few clicks.",
-                "hero.cta": "Start for Free",
-                "hero.learn_more": "Learn More",
-                "features.references.title": "📝 Unique References",
-                "features.references.desc": "Import your products from Excel and automatically generate unique and personalized references for each item.",
-                "features.invoicing.title": "📄 Professional Invoicing",
-                "features.invoicing.desc": "Create professional invoices in a few clicks with automatic VAT calculation and customer management.",
-                "features.cloud.title": "☁️ Cloud Database",
-                "features.cloud.desc": "Your data is securely saved in the cloud. Access it from anywhere, anytime.",
-                "features.free.title": "✅ 100% Free",
-                "features.free.desc": "No hidden fees, no subscription. Enjoy all features for free.",
-                "features.secure.title": "🔒 Secure",
-                "features.secure.desc": "256-bit encryption to protect your data. Secure authentication and GDPR compliance.",
-                "features.easy.title": "⚡ Easy to Use",
-                "features.easy.desc": "Intuitive and modern interface. Get started in minutes without training.",
-                "cta.title": "Ready to Start?",
-                "cta.subtitle": "Join hundreds of companies that trust Références Pro",
-                "cta.button": "Create Free Account",
-                "auth.login.title": "Login",
-                "auth.signup.title": "Create Account",
-                "auth.email": "Email",
-                "auth.password": "Password",
-                "auth.signup.confirm_password": "Confirm Password",
-                "auth.login.button": "Sign In",
-                "auth.signup.button": "Create Account",
-                "auth.login.no_account": "No account?",
-                "auth.login.signup_link": "Create account",
-                "auth.signup.has_account": "Already have an account?",
-                "auth.signup.login_link": "Sign in",
-                "tabs.references": "References",
-                "tabs.invoicing": "Invoicing",
-                "upload.title": "Drag and drop your Excel file here or click to select",
-                "stats.total": "Total Products",
-                "stats.avg_price": "Average Price (Ex. VAT)",
-                "stats.last_update": "Last Update",
-                "invoicing.title": "Create Invoice",
-                "invoicing.no_products": "Feature available after importing products",
-                "footer.app_name": "Références Pro",
-                "footer.powered_by": "Powered by"
-            },
-            es: {
-                "hero.title": "Gestión Profesional de tus Referencias y Facturas",
-                "hero.subtitle": "Importa tus productos desde Excel, genera referencias únicas y crea facturas profesionales en pocos clics.",
-                "hero.cta": "Comenzar Gratis",
-                "hero.learn_more": "Saber Más",
-                "features.references.title": "📝 Referencias Únicas",
-                "features.references.desc": "Importa tus productos desde Excel y genera automáticamente referencias únicas y personalizadas para cada artículo.",
-                "features.invoicing.title": "📄 Facturación Profesional",
-                "features.invoicing.desc": "Crea facturas profesionales en pocos clics con cálculo automático de IVA y gestión de clientes.",
-                "features.cloud.title": "☁️ Base de Datos en la Nube",
-                "features.cloud.desc": "Tus datos están guardados de forma segura en la nube. Accede desde cualquier lugar, en cualquier momento.",
-                "features.free.title": "✅ 100% Gratis",
-                "features.free.desc": "Sin tarifas ocultas, sin suscripción. Disfruta de todas las funciones gratis.",
-                "features.secure.title": "🔒 Seguro",
-                "features.secure.desc": "Cifrado de 256 bits para proteger tus datos. Autenticación segura y cumplimiento RGPD.",
-                "features.easy.title": "⚡ Fácil de Usar",
-                "features.easy.desc": "Interfaz intuitiva y moderna. Comienza en minutos sin formación.",
-                "cta.title": "¿Listo para Comenzar?",
-                "cta.subtitle": "Únete a cientos de empresas que confían en Références Pro",
-                "cta.button": "Crear Cuenta Gratis",
-                "auth.login.title": "Iniciar Sesión",
-                "auth.signup.title": "Crear Cuenta",
-                "auth.email": "Correo Electrónico",
-                "auth.password": "Contraseña",
-                "auth.signup.confirm_password": "Confirmar Contraseña",
-                "auth.login.button": "Entrar",
-                "auth.signup.button": "Crear Cuenta",
-                "auth.login.no_account": "¿No tienes cuenta?",
-                "auth.login.signup_link": "Crear cuenta",
-                "auth.signup.has_account": "¿Ya tienes cuenta?",
-                "auth.signup.login_link": "Iniciar sesión",
-                "tabs.references": "Referencias",
-                "tabs.invoicing": "Facturación",
-                "upload.title": "Arrastra y suelta tu archivo Excel aquí o haz clic para seleccionar",
-                "stats.total": "Productos Totales",
-                "stats.avg_price": "Precio Medio (Sin IVA)",
-                "stats.last_update": "Última Actualización",
-                "invoicing.title": "Crear Factura",
-                "invoicing.no_products": "Funcionalidad disponible después de importar productos",
-                "footer.app_name": "Références Pro",
-                "footer.powered_by": "Desarrollado por"
-            }
-        };
-
-        // Fonction de traduction
-        function translatePage(lang) {
-            document.querySelectorAll('[data-i18n]').forEach(element => {
-                const key = element.getAttribute('data-i18n');
-                if (translations[lang] && translations[lang][key]) {
-                    element.textContent = translations[lang][key];
-                }
-            });
-            localStorage.setItem('preferredLanguage', lang);
-        }
-
-        // Thème
-        function initTheme() {
-            const theme = localStorage.getItem('theme') || 'light';
-            document.documentElement.setAttribute('data-theme', theme);
-        }
-
-        function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-        }
-
-        // Navigation
-        function showLanding() {
-            console.log('Affichage de la landing page');
-            document.getElementById('landing-page').classList.remove('hidden');
-            document.getElementById('auth-page').classList.add('hidden');
-            document.getElementById('app-page').classList.add('hidden');
-            document.getElementById('loginBtn').classList.remove('hidden');
-            document.getElementById('signupBtn').classList.remove('hidden');
-            document.getElementById('logoutBtn').classList.add('hidden');
-        }
-
-        function showAuth(mode = 'login') {
-            console.log('Affichage du formulaire:', mode);
-            document.getElementById('landing-page').classList.add('hidden');
-            document.getElementById('auth-page').classList.remove('hidden');
-            document.getElementById('app-page').classList.add('hidden');
+        document.addEventListener('DOMContentLoaded', async function() {
+            const { data: { user } } = await supabase.auth.getUser();
             
-            if (mode === 'login') {
-                document.getElementById('login-form').classList.remove('hidden');
-                document.getElementById('signup-form').classList.add('hidden');
+            if (user) {
+                currentUser = user;
+                showApp();
+                await loadProducts();
+                await loadInvoices();
+                await loadClients();
+                loadSettings();
             } else {
-                document.getElementById('login-form').classList.add('hidden');
-                document.getElementById('signup-form').classList.remove('hidden');
+                showLanding();
             }
+
+            setupUploadZone();
+            setupLogoUpload();
+        });
+
+        function showLanding() {
+            document.getElementById('landingPage').style.display = 'flex';
+            document.getElementById('appContainer').style.display = 'none';
         }
 
         function showApp() {
-            console.log('Affichage de l\'application');
-            document.getElementById('landing-page').classList.add('hidden');
-            document.getElementById('auth-page').classList.add('hidden');
-            document.getElementById('app-page').classList.remove('hidden');
-            document.getElementById('loginBtn').classList.add('hidden');
-            document.getElementById('signupBtn').classList.add('hidden');
-            document.getElementById('logoutBtn').classList.remove('hidden');
+            document.getElementById('landingPage').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'flex';
+            document.getElementById('userEmail').textContent = currentUser.email;
         }
 
-        // Authentification
-        async function handleLogin(e) {
+        function showLoginModal() {
+            document.getElementById('loginModal').classList.add('show');
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.remove('show');
+        }
+
+        function showSignupModal() {
+            document.getElementById('signupModal').classList.add('show');
+        }
+
+        function closeSignupModal() {
+            document.getElementById('signupModal').classList.remove('show');
+        }
+
+        function showSettingsModal() {
+            document.getElementById('settingsModal').classList.add('show');
+        }
+
+        function closeSettingsModal() {
+            document.getElementById('settingsModal').classList.remove('show');
+        }
+
+        async function login(e) {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
 
-            try {
-                const { data, error } = await supabase.auth.signInWithPassword({
-                    email: email,
-                    password: password
-                });
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email,
+                password
+            });
 
-                if (error) throw error;
-
-                currentUser = data.user;
-                await loadProducts();
-                showApp();
-            } catch (error) {
+            if (error) {
                 alert('Erreur de connexion: ' + error.message);
+            } else {
+                currentUser = data.user;
+                closeLoginModal();
+                showApp();
+                await loadProducts();
+                await loadInvoices();
+                await loadClients();
+                loadSettings();
             }
         }
 
-        async function handleSignup(e) {
+        async function signup(e) {
             e.preventDefault();
             const email = document.getElementById('signupEmail').value;
             const password = document.getElementById('signupPassword').value;
-            const passwordConfirm = document.getElementById('signupPasswordConfirm').value;
 
-            if (password !== passwordConfirm) {
-                alert('Les mots de passe ne correspondent pas');
-                return;
-            }
+            const { data, error } = await supabase.auth.signUp({
+                email,
+                password
+            });
 
-            try {
-                const { data, error } = await supabase.auth.signUp({
-                    email: email,
-                    password: password
-                });
-
-                if (error) throw error;
-
+            if (error) {
+                alert('Erreur d\'inscription: ' + error.message);
+            } else {
                 alert('Compte créé ! Vérifiez votre email pour confirmer votre inscription.');
-                showAuth('login');
-            } catch (error) {
-                alert('Erreur lors de la création du compte: ' + error.message);
+                closeSignupModal();
             }
         }
 
-        async function handleLogout() {
-            try {
-                const { error } = await supabase.auth.signOut();
-                if (error) throw error;
-                
-                currentUser = null;
-                products = [];
-                showLanding();
-            } catch (error) {
-                alert('Erreur lors de la déconnexion: ' + error.message);
-            }
+        async function logout() {
+            await supabase.auth.signOut();
+            currentUser = null;
+            productsData = [];
+            invoicesData = [];
+            clientsData = [];
+            showLanding();
         }
 
-        // Gestion des produits
-        async function loadProducts() {
-            if (!currentUser) return;
-
-            try {
-                const { data, error } = await supabase
-                    .from('products')
-                    .select('*')
-                    .eq('user_id', currentUser.id)
-                    .order('created_at', { ascending: false });
-
-                if (error) throw error;
-
-                products = data || [];
-                displayProducts();
-                updateInvoicingTab();
-            } catch (error) {
-                console.error('Erreur lors du chargement des produits:', error);
-            }
-        }
-
-        function displayProducts() {
-            if (products.length === 0) {
-                document.getElementById('statsContainer').classList.add('hidden');
-                document.getElementById('productsTable').classList.add('hidden');
-                return;
-            }
-
-            // Statistiques
-            document.getElementById('statsContainer').classList.remove('hidden');
-            document.getElementById('totalProducts').textContent = products.length;
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             
-            const avgPrice = products.reduce((sum, p) => sum + (parseFloat(p.purchase_price) || 0), 0) / products.length;
-            document.getElementById('avgPrice').textContent = avgPrice.toFixed(2) + '€';
-            
-            const lastUpdate = new Date().toLocaleDateString('fr-FR');
-            document.getElementById('lastUpdate').textContent = lastUpdate;
+            event.target.classList.add('active');
+            document.getElementById('tab-' + tabName).classList.add('active');
 
-            // Tableau
-            document.getElementById('productsTable').classList.remove('hidden');
-            const tbody = document.getElementById('productsTableBody');
-            tbody.innerHTML = '';
-
-            products.slice(0, 50).forEach(product => {
-                const row = tbody.insertRow();
-                row.innerHTML = `
-                    <td>${product.reference || '-'}</td>
-                    <td>${product.designation || '-'}</td>
-                    <td>${parseFloat(product.purchase_price || 0).toFixed(2)}€</td>
-                    <td>${parseFloat(product.selling_price || 0).toFixed(2)}€</td>
-                    <td>${product.ean || '-'}</td>
-                `;
-            });
-        }
-
-        function updateInvoicingTab() {
-            const container = document.getElementById('invoiceFormContainer');
-            
-            if (products.length === 0) {
-                container.innerHTML = '<p data-i18n="invoicing.no_products">Fonctionnalité disponible après import des produits</p>';
-                return;
-            }
-
-            container.innerHTML = `
-                <div class="form-group">
-                    <label>Produit</label>
-                    <select id="invoiceProduct">
-                        <option value="">Sélectionner un produit</option>
-                        ${products.map(p => `<option value="${p.id}">${p.designation} - ${p.selling_price}€</option>`).join('')}
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Quantité</label>
-                    <input type="number" id="invoiceQuantity" value="1" min="1">
-                </div>
-                <div class="form-group">
-                    <label>Client</label>
-                    <input type="text" id="invoiceClient" placeholder="Nom du client">
-                </div>
-                <button class="btn btn-primary" onclick="generateInvoice()">Générer la facture</button>
-                <div id="invoicePreview" style="margin-top: 2rem;"></div>
-            `;
-        }
-
-        function generateInvoice() {
-            const productId = document.getElementById('invoiceProduct').value;
-            const quantity = parseInt(document.getElementById('invoiceQuantity').value);
-            const client = document.getElementById('invoiceClient').value;
-
-            if (!productId || !client) {
-                alert('Veuillez remplir tous les champs');
-                return;
-            }
-
-            const product = products.find(p => p.id === productId);
-            if (!product) return;
-
-            const subtotal = parseFloat(product.selling_price) * quantity;
-            const vat = subtotal * 0.20;
-            const total = subtotal + vat;
-
-            document.getElementById('invoicePreview').innerHTML = `
-                <div class="auth-card">
-                    <h3>Aperçu de la facture</h3>
-                    <p><strong>Client:</strong> ${client}</p>
-                    <p><strong>Produit:</strong> ${product.designation}</p>
-                    <p><strong>Quantité:</strong> ${quantity}</p>
-                    <p><strong>Prix unitaire HT:</strong> ${parseFloat(product.selling_price).toFixed(2)}€</p>
-                    <hr>
-                    <p><strong>Sous-total HT:</strong> ${subtotal.toFixed(2)}€</p>
-                    <p><strong>TVA (20%):</strong> ${vat.toFixed(2)}€</p>
-                    <p style="font-size: 1.5rem;"><strong>Total TTC:</strong> ${total.toFixed(2)}€</p>
-                </div>
-            `;
-        }
-
-        // Import Excel
-        async function handleFileUpload(file) {
-            if (!file) return;
-
-            try {
-                console.log('Lecture du fichier:', file.name);
-                const data = await file.arrayBuffer();
-                const workbook = XLSX.read(data, { type: 'array' });
-                const sheetName = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[sheetName];
-                const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-
-                console.log('Premières lignes du fichier:', jsonData.slice(0, 3));
-
-                const headers = jsonData[0];
-                console.log('En-têtes détectés:', headers);
-
-                // Détecter les colonnes - CORRECTION DU BUG DES APOSTROPHES
-                const purchasePriceCol = headers.findIndex(h => 
-                    h && (
-                        h.toLowerCase().includes('prix') && h.toLowerCase().includes('achat') ||
-                        h.toLowerCase().includes('purchase') ||
-                        h.toLowerCase().includes('cost price')
-                    )
-                );
-                
-                const sellingPriceCol = headers.findIndex(h => 
-                    h && (
-                        h.toLowerCase().includes('prix') && h.toLowerCase().includes('vente') ||
-                        h.toLowerCase().includes('selling') ||
-                        h.toLowerCase().includes('sale price')
-                    )
-                );
-
-                const designationCol = headers.findIndex(h => 
-                    h && (h.toLowerCase().includes('désignation') || h.toLowerCase().includes('designation'))
-                );
-
-                const eanCol = headers.findIndex(h => 
-                    h && h.toLowerCase().includes('ean')
-                );
-
-                console.log('Colonnes détectées:', {
-                    purchasePrice: purchasePriceCol,
-                    sellingPrice: sellingPriceCol,
-                    designation: designationCol,
-                    ean: eanCol
-                });
-
-                // Conversion des données
-                const productsToImport = [];
-                for (let i = 1; i < jsonData.length; i++) {
-                    const row = jsonData[i];
-                    if (!row || row.length === 0) continue;
-
-                    const purchasePrice = parseFloat(String(row[purchasePriceCol] || '0').replace(',', '.'));
-                    const sellingPrice = parseFloat(String(row[sellingPriceCol] || '0').replace(',', '.'));
-
-                    const product = {
-                        user_id: currentUser.id,
-                        designation: row[designationCol] || '',
-                        ean: row[eanCol] || '',
-                        purchase_price: purchasePrice,
-                        selling_price: sellingPrice,
-                        reference: `REF-${Date.now()}-${i}`
-                    };
-
-                    productsToImport.push(product);
-                }
-
-                console.log('Premiers produits à importer:', productsToImport.slice(0, 3));
-
-                // Supprimer les anciens produits
-                const { error: deleteError } = await supabase
-                    .from('products')
-                    .delete()
-                    .eq('user_id', currentUser.id);
-
-                if (deleteError) throw deleteError;
-
-                // Insérer les nouveaux produits
-                const { data: insertedData, error: insertError } = await supabase
-                    .from('products')
-                    .insert(productsToImport);
-
-                if (insertError) throw insertError;
-
-                alert(`${productsToImport.length} produits importés avec succès !`);
-                await loadProducts();
-
-            } catch (error) {
-                console.error('Erreur lors de l\'import:', error);
-                alert('Erreur lors de l\'import: ' + error.message);
+            if (tabName === 'facturation') {
+                loadProductsToSelect();
+                loadClientsToSelect();
+            } else if (tabName === 'dashboard') {
+                updateDashboard();
+            } else if (tabName === 'historique') {
+                displayInvoices();
+            } else if (tabName === 'clients') {
+                displayClients();
             }
         }
 
-        // Initialisation après le chargement du DOM
-        document.addEventListener('DOMContentLoaded', async function() {
-            console.log('DOM chargé - Initialisation');
-            
-            // Initialiser le thème et la langue
-            initTheme();
-            const savedLang = localStorage.getItem('preferredLanguage') || 'fr';
-            document.getElementById('langSelector').value = savedLang;
-            translatePage(savedLang);
-
-            // Vérifier la session APRÈS que tout soit chargé
-            try {
-                const { data: { session } } = await supabase.auth.getSession();
-                
-                if (session) {
-                    console.log('Session détectée, affichage de l\'app');
-                    currentUser = session.user;
-                    await loadProducts();
-                    showApp();
-                } else {
-                    console.log('Pas de session, affichage de la landing page');
-                    showLanding();
-                }
-            } catch (error) {
-                console.error('Erreur lors de la vérification de la session:', error);
-                showLanding();
-            }
-
-            // Event Listeners pour la navigation
-            document.getElementById('loginBtn').addEventListener('click', () => showAuth('login'));
-            document.getElementById('signupBtn').addEventListener('click', () => showAuth('signup'));
-            document.getElementById('heroSignupBtn').addEventListener('click', () => showAuth('signup'));
-            document.getElementById('ctaSignupBtn').addEventListener('click', () => showAuth('signup'));
-            document.getElementById('switchToSignup').addEventListener('click', () => showAuth('signup'));
-            document.getElementById('switchToLogin').addEventListener('click', () => showAuth('login'));
-            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
-
-            // Event Listeners pour l'authentification
-            document.getElementById('loginSubmit').addEventListener('click', handleLogin);
-            document.getElementById('signupSubmit').addEventListener('click', handleSignup);
-
-            // Event Listener pour le changement de thème
-            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-
-            // Event Listener pour la langue
-            document.getElementById('langSelector').addEventListener('change', (e) => {
-                translatePage(e.target.value);
-            });
-
-            // Tabs
-            document.querySelectorAll('.nav-tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const targetTab = this.getAttribute('data-tab');
-                    
-                    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                    
-                    this.classList.add('active');
-                    document.getElementById('tab-' + targetTab).classList.add('active');
-                });
-            });
-
-            // Upload - CORRECTION DU BUG
+        function setupUploadZone() {
             const uploadZone = document.getElementById('uploadZone');
             const fileInput = document.getElementById('fileInput');
 
-            uploadZone.addEventListener('click', () => {
-                console.log('Clic sur la zone d\'upload');
-                fileInput.click();
-            });
+            if (!uploadZone || !fileInput) {
+                return;
+            }
 
-            fileInput.addEventListener('change', (e) => {
-                console.log('Fichier sélectionné:', e.target.files[0]);
-                if (e.target.files[0]) {
-                    handleFileUpload(e.target.files[0]);
-                }
+            uploadZone.addEventListener('click', () => {
+                fileInput.click();
             });
 
             uploadZone.addEventListener('dragover', (e) => {
@@ -1183,14 +1857,1338 @@
             uploadZone.addEventListener('drop', (e) => {
                 e.preventDefault();
                 uploadZone.classList.remove('dragover');
-                console.log('Fichier déposé:', e.dataTransfer.files[0]);
-                if (e.dataTransfer.files[0]) {
-                    handleFileUpload(e.dataTransfer.files[0]);
-                }
+                const file = e.dataTransfer.files[0];
+                if (file) handleFileUpload(file);
             });
 
-            console.log('Initialisation terminée');
-        });
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) handleFileUpload(file);
+            });
+        }
+
+        async function handleFileUpload(file) {
+            if (!file.name.match(/\.(xlsx|xls)$/)) {
+                alert('Veuillez sélectionner un fichier Excel (.xlsx ou .xls)');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { raw: false });
+
+                    await processExcelData(jsonData);
+                } catch (error) {
+                    alert('Erreur lors de la lecture du fichier: ' + error.message);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        async function processExcelData(data) {
+            if (data.length === 0) {
+                alert('Le fichier est vide');
+                return;
+            }
+
+            const headers = Object.keys(data[0]);
+            
+            const designationCol = headers.find(h => 
+                h.toLowerCase().includes('désignation') || 
+                h.toLowerCase().includes('designation') ||
+                h.toLowerCase().includes('description')
+            );
+            
+            const eanCol = headers.find(h => h.toLowerCase().includes('ean'));
+            const purchasePriceCol = headers.find(h => h.toLowerCase().includes('achat'));
+            const sellingPriceCol = headers.find(h => h.toLowerCase().includes('vente'));
+            const artGrpCol = headers.find(h => h.toLowerCase().includes('art') && h.toLowerCase().includes('grp'));
+
+            if (!designationCol || !eanCol) {
+                alert('Colonnes requises non trouvées (Désignation/Description et EAN)');
+                return;
+            }
+
+            let successCount = 0;
+            let errorCount = 0;
+            let sequentialNumber = 1;
+            
+            for (const row of data) {
+                const designation = row[designationCol];
+                const ean = row[eanCol];
+                const purchasePrice = parseFloat(String(row[purchasePriceCol] || 0).replace(',', '.').replace(/[^\d.]/g, '')) || 0;
+                const sellingPrice = parseFloat(String(row[sellingPriceCol] || 0).replace(',', '.').replace(/[^\d.]/g, '')) || 0;
+                
+                let artGrp = artGrpCol ? String(row[artGrpCol] || '00').trim() : '00';
+                if (artGrp === 'NaN' || artGrp === 'undefined' || artGrp === '') {
+                    artGrp = '00';
+                }
+                artGrp = artGrp.padStart(2, '0');
+
+                if (designation && ean) {
+                    const firstWord = designation.trim().split(/[\s-]/)[0];
+                    const descPrefix = firstWord.substring(0, 3).toUpperCase();
+                    const seqNumber = String(sequentialNumber).padStart(4, '0');
+                    const reference = `${artGrp}-${descPrefix}-${seqNumber}`;
+                    
+                    const { error } = await supabase
+                        .from('products')
+                        .insert({
+                            user_id: currentUser.id,
+                            reference: reference,
+                            designation: designation,
+                            ean: ean,
+                            purchase_price: purchasePrice,
+                            selling_price: sellingPrice
+                        });
+
+                    if (error) {
+                        errorCount++;
+                    } else {
+                        successCount++;
+                        sequentialNumber++;
+                    }
+                }
+            }
+
+            await loadProducts();
+            
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.value = '';
+                document.getElementById('clearSearch').classList.remove('show');
+                document.getElementById('searchResultsInfo').style.display = 'none';
+            }
+            
+            setTimeout(() => {
+                displayProducts();
+                updateStats();
+                updateDashboard();
+            }, 100);
+            
+            if (errorCount > 0) {
+                alert('Import terminé avec ' + errorCount + ' erreur(s). ' + successCount + ' produits importés.');
+            } else if (successCount > 0) {
+                alert('Import réussi : ' + successCount + ' produits importés avec succès.');
+            }
+        }
+
+        async function loadProducts() {
+            const { data, error } = await supabase
+                .from('products')
+                .select('*')
+                .eq('user_id', currentUser.id);
+
+            if (error) {
+                alert('Erreur lors du chargement des produits: ' + error.message);
+                return;
+            }
+
+            productsData = data;
+            filteredProducts = data;
+            
+            if (productsData.length > 0) {
+                document.getElementById('searchContainer').style.display = 'flex';
+                setupSearchListeners();
+            } else {
+                document.getElementById('searchContainer').style.display = 'none';
+            }
+            
+            displayProducts();
+            updateStats();
+            updateDashboard();
+        }
+
+        function setupSearchListeners() {
+            const searchInput = document.getElementById('searchInput');
+            const clearButton = document.getElementById('clearSearch');
+
+            if (!searchInput || !clearButton) return;
+
+            searchInput.removeEventListener('input', handleSearchInput);
+            searchInput.addEventListener('input', handleSearchInput);
+
+            clearButton.removeEventListener('click', handleClearSearch);
+            clearButton.addEventListener('click', handleClearSearch);
+
+            searchInput.removeEventListener('keydown', handleSearchKeydown);
+            searchInput.addEventListener('keydown', handleSearchKeydown);
+        }
+
+        function handleSearchInput(e) {
+            const query = e.target.value.trim();
+            const clearButton = document.getElementById('clearSearch');
+            
+            if (query.length > 0) {
+                clearButton.classList.add('show');
+            } else {
+                clearButton.classList.remove('show');
+            }
+
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                filterProducts(query);
+            }, 300);
+        }
+
+        function handleClearSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const clearButton = document.getElementById('clearSearch');
+            
+            searchInput.value = '';
+            clearButton.classList.remove('show');
+            filterProducts('');
+            searchInput.focus();
+        }
+
+        function handleSearchKeydown(e) {
+            if (e.key === 'Escape') {
+                const searchInput = document.getElementById('searchInput');
+                const clearButton = document.getElementById('clearSearch');
+                
+                searchInput.value = '';
+                clearButton.classList.remove('show');
+                filterProducts('');
+            }
+        }
+
+        function filterProducts(query) {
+            const searchResultsInfo = document.getElementById('searchResultsInfo');
+            
+            if (!query || query.length === 0) {
+                filteredProducts = productsData;
+                searchResultsInfo.style.display = 'none';
+            } else {
+                const lowerQuery = query.toLowerCase();
+                
+                filteredProducts = productsData.filter(product => {
+                    return (
+                        product.reference.toLowerCase().includes(lowerQuery) ||
+                        product.designation.toLowerCase().includes(lowerQuery) ||
+                        product.ean.toLowerCase().includes(lowerQuery)
+                    );
+                });
+
+                searchResultsInfo.style.display = 'block';
+                searchResultsInfo.textContent = `${filteredProducts.length} produit${filteredProducts.length > 1 ? 's' : ''} trouvé${filteredProducts.length > 1 ? 's' : ''} sur ${productsData.length}`;
+            }
+
+            displayProducts();
+        }
+
+        function displayProducts() {
+            const container = document.getElementById('dataTableContainer');
+            
+            if (!container) {
+                console.error('Container dataTableContainer not found!');
+                return;
+            }
+            
+            if (productsData.length === 0) {
+                container.innerHTML = '<p>Aucun produit importé. Glissez-déposez votre fichier Excel ci-dessus.</p>';
+                return;
+            }
+
+            if (filteredProducts.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results-message">
+                        <p>Aucun produit ne correspond à votre recherche.</p>
+                        <small>Essayez avec d'autres mots-clés ou effacez la recherche.</small>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<table class="data-table"><thead><tr>';
+            html += '<th>Référence</th>';
+            html += '<th>Désignation</th>';
+            html += '<th>EAN</th>';
+            html += '<th class="text-right">Prix d\'achat HT</th>';
+            html += '<th class="text-right">Prix de vente HT</th>';
+            html += '<th class="text-right">Marge</th>';
+            html += '<th style="width: 180px;">Actions</th>';
+            html += '</tr></thead><tbody>';
+
+            filteredProducts.forEach(product => {
+                const margin = product.purchase_price > 0 
+                    ? (((product.selling_price - product.purchase_price) / product.purchase_price) * 100).toFixed(1)
+                    : 0;
+
+                html += '<tr>';
+                html += `<td>${product.reference}</td>`;
+                html += `<td>${product.designation}</td>`;
+                html += `<td>${product.ean}</td>`;
+                html += `<td class="text-right">${product.purchase_price.toFixed(2)}€</td>`;
+                html += `<td class="text-right">${product.selling_price.toFixed(2)}€</td>`;
+                html += `<td class="text-right">${margin}%</td>`;
+                html += `<td>
+                    <div class="action-buttons">
+                        <button class="btn btn-small btn-edit" data-product-id="${product.id}">Éditer</button>
+                        <button class="btn btn-small btn-danger btn-delete" data-product-id="${product.id}">Supprimer</button>
+                    </div>
+                </td>`;
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+            
+            setupProductActionButtons();
+            
+            console.log('Products displayed:', filteredProducts.length, 'of', productsData.length);
+        }
+
+        function setupProductActionButtons() {
+            document.querySelectorAll('.btn-edit').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-product-id');
+                    console.log('Edit clicked for product ID:', productId);
+                    editProduct(productId);
+                });
+            });
+
+            document.querySelectorAll('.btn-delete').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-product-id');
+                    console.log('Delete clicked for product ID:', productId);
+                    deleteProduct(productId);
+                });
+            });
+        }
+
+        function editProduct(productId) {
+            console.log('Searching for product with ID:', productId);
+            
+            const product = productsData.find(p => String(p.id) === String(productId));
+            
+            if (!product) {
+                console.error('Product not found! Searched ID:', productId);
+                console.log('Available products:', productsData);
+                alert('Produit non trouvé (ID: ' + productId + ')');
+                return;
+            }
+
+            console.log('Product found:', product);
+
+            document.getElementById('editProductId').value = product.id;
+            document.getElementById('editReference').value = product.reference;
+            document.getElementById('editDesignation').value = product.designation;
+            document.getElementById('editEan').value = product.ean;
+            document.getElementById('editPurchasePrice').value = product.purchase_price;
+            document.getElementById('editSellingPrice').value = product.selling_price;
+
+            document.getElementById('editProductModal').classList.add('show');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editProductModal').classList.remove('show');
+        }
+
+        async function updateProduct(e) {
+            e.preventDefault();
+
+            const productId = document.getElementById('editProductId').value;
+            const designation = document.getElementById('editDesignation').value;
+            const ean = document.getElementById('editEan').value;
+            const purchasePrice = parseFloat(document.getElementById('editPurchasePrice').value);
+            const sellingPrice = parseFloat(document.getElementById('editSellingPrice').value);
+
+            console.log('=== UPDATING PRODUCT ===');
+            console.log('Product ID:', productId);
+            console.log('New values:', { designation, ean, purchasePrice, sellingPrice });
+
+            if (!designation || !ean || purchasePrice < 0 || sellingPrice < 0) {
+                alert('Veuillez remplir tous les champs correctement');
+                return;
+            }
+
+            const { error } = await supabase
+                .from('products')
+                .update({
+                    designation: designation,
+                    ean: ean,
+                    purchase_price: purchasePrice,
+                    selling_price: sellingPrice
+                })
+                .eq('id', productId);
+
+            if (error) {
+                console.error('Update error:', error);
+                alert('Erreur lors de la mise à jour: ' + error.message);
+                return;
+            }
+
+            console.log('Product updated successfully');
+
+            closeEditModal();
+
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.value = '';
+                document.getElementById('clearSearch').classList.remove('show');
+                document.getElementById('searchResultsInfo').style.display = 'none';
+            }
+
+            await loadProducts();
+            
+            setTimeout(() => {
+                displayProducts();
+                updateStats();
+                updateDashboard();
+            }, 100);
+
+            alert('Produit mis à jour avec succès.');
+        }
+
+        function deleteProduct(productId) {
+            console.log('Searching for product to delete with ID:', productId);
+            
+            const product = productsData.find(p => String(p.id) === String(productId));
+            
+            if (!product) {
+                console.error('Product not found! Searched ID:', productId);
+                alert('Produit non trouvé (ID: ' + productId + ')');
+                return;
+            }
+
+            console.log('Product found for deletion:', product);
+
+            productToDelete = productId;
+
+            document.getElementById('deleteProductInfo').textContent = 
+                `${product.reference} - ${product.designation}`;
+
+            document.getElementById('deleteConfirmModal').classList.add('show');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteConfirmModal').classList.remove('show');
+            productToDelete = null;
+        }
+
+        async function confirmDelete() {
+            if (!productToDelete) {
+                alert('Erreur: Aucun produit sélectionné');
+                return;
+            }
+
+            console.log('=== DELETING PRODUCT ===');
+            console.log('Product ID to delete:', productToDelete);
+
+            const { error } = await supabase
+                .from('products')
+                .delete()
+                .eq('id', productToDelete);
+
+            if (error) {
+                console.error('Delete error:', error);
+                alert('Erreur lors de la suppression: ' + error.message);
+                return;
+            }
+
+            console.log('Product deleted successfully');
+
+            closeDeleteModal();
+
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.value = '';
+                document.getElementById('clearSearch').classList.remove('show');
+                document.getElementById('searchResultsInfo').style.display = 'none';
+            }
+
+            await loadProducts();
+            
+            setTimeout(() => {
+                displayProducts();
+                updateStats();
+                updateDashboard();
+            }, 100);
+
+            alert('Produit supprimé avec succès.');
+        }
+
+        function updateStats() {
+            if (productsData.length === 0) {
+                document.getElementById('totalProducts').textContent = '0';
+                document.getElementById('avgPurchase').textContent = '0€';
+                document.getElementById('avgSelling').textContent = '0€';
+                document.getElementById('avgMargin').textContent = '0%';
+                return;
+            }
+
+            const totalProducts = productsData.length;
+            const avgPurchase = productsData.reduce((sum, p) => sum + p.purchase_price, 0) / totalProducts;
+            const avgSelling = productsData.reduce((sum, p) => sum + p.selling_price, 0) / totalProducts;
+            const avgMargin = avgPurchase > 0 ? ((avgSelling - avgPurchase) / avgPurchase * 100) : 0;
+
+            document.getElementById('totalProducts').textContent = totalProducts;
+            document.getElementById('avgPurchase').textContent = avgPurchase.toFixed(2) + '€';
+            document.getElementById('avgSelling').textContent = avgSelling.toFixed(2) + '€';
+            document.getElementById('avgMargin').textContent = avgMargin.toFixed(1) + '%';
+        }
+
+        function updateDashboard() {
+            if (productsData.length === 0) {
+                document.getElementById('dashboardCA').textContent = '0€';
+                document.getElementById('dashboardStock').textContent = '0';
+                document.getElementById('dashboardMarge').textContent = '0%';
+                document.getElementById('dashboardPrixMoyen').textContent = '0€';
+                document.getElementById('categoryTableBody').innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 30px; color: #999;">
+                            Aucune donnée disponible. Importez vos produits pour voir les statistiques.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            const totalCA = productsData.reduce((sum, p) => sum + p.selling_price, 0);
+            const totalPurchase = productsData.reduce((sum, p) => sum + p.purchase_price, 0);
+            const avgMarge = totalPurchase > 0 ? ((totalCA - totalPurchase) / totalPurchase * 100) : 0;
+            const avgPrice = totalCA / productsData.length;
+
+            document.getElementById('dashboardCA').textContent = totalCA.toFixed(2) + '€';
+            document.getElementById('dashboardStock').textContent = productsData.length;
+            document.getElementById('dashboardMarge').textContent = avgMarge.toFixed(1) + '%';
+            document.getElementById('dashboardPrixMoyen').textContent = avgPrice.toFixed(2) + '€';
+
+            const categories = {};
+            productsData.forEach(product => {
+                const artGrp = product.reference.split('-')[0];
+                if (!categories[artGrp]) {
+                    categories[artGrp] = {
+                        count: 0,
+                        ca: 0,
+                        purchase: 0
+                    };
+                }
+                categories[artGrp].count++;
+                categories[artGrp].ca += product.selling_price;
+                categories[artGrp].purchase += product.purchase_price;
+            });
+
+            let html = '';
+            Object.keys(categories).sort((a, b) => categories[b].count - categories[a].count).forEach(artGrp => {
+                const cat = categories[artGrp];
+                const marge = cat.purchase > 0 ? ((cat.ca - cat.purchase) / cat.purchase * 100) : 0;
+                
+                html += '<tr>';
+                html += `<td><strong>${artGrp}</strong></td>`;
+                html += `<td>${cat.count}</td>`;
+                html += `<td class="text-right">${cat.ca.toFixed(2)}€</td>`;
+                html += `<td class="text-right">${cat.purchase.toFixed(2)}€</td>`;
+                html += `<td class="text-right">${marge.toFixed(1)}%</td>`;
+                html += '</tr>';
+            });
+
+            document.getElementById('categoryTableBody').innerHTML = html;
+        }
+
+        function loadProductsToSelect() {
+            const select = document.getElementById('productSelect');
+            select.innerHTML = '<option value="">Choisir un produit...</option>';
+            
+            productsData.forEach((product, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `${product.designation} - ${product.selling_price.toFixed(2)}€`;
+                select.appendChild(option);
+            });
+        }
+
+        function loadClientsToSelect() {
+            const select = document.getElementById('clientSelect');
+            select.innerHTML = '<option value="">Nouveau client (saisie manuelle)...</option>';
+            
+            clientsData.forEach((client, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = client.name;
+                select.appendChild(option);
+            });
+        }
+
+        function onClientSelect() {
+            const clientIndex = document.getElementById('clientSelect').value;
+            const manualFields = document.getElementById('manualClientFields');
+            
+            if (!clientIndex || clientIndex === '') {
+                manualFields.style.display = 'block';
+                document.getElementById('clientName').value = '';
+                document.getElementById('clientAddress').value = '';
+            } else {
+                const client = clientsData[clientIndex];
+                manualFields.style.display = 'none';
+                document.getElementById('clientName').value = client.name;
+                document.getElementById('clientAddress').value = client.address;
+            }
+        }
+
+        function addToInvoice() {
+            const productIndex = document.getElementById('productSelect').value;
+            const quantity = parseInt(document.getElementById('quantity').value);
+            const clientName = document.getElementById('clientName').value;
+            const clientAddress = document.getElementById('clientAddress').value;
+
+            if (!productIndex || !quantity || !clientName || !clientAddress) {
+                alert('Veuillez remplir tous les champs');
+                return;
+            }
+
+            const product = productsData[productIndex];
+            invoiceItems.push({
+                designation: product.designation,
+                quantity: quantity,
+                price: product.selling_price,
+                total: product.selling_price * quantity
+            });
+
+            updateInvoicePreview(clientName, clientAddress);
+        }
+
+        function updateInvoicePreview(clientName, clientAddress) {
+            const companyName = localStorage.getItem('companyName') || 'Votre entreprise';
+            const companyAddress = localStorage.getItem('companyAddress') || '';
+            const companySiret = localStorage.getItem('companySiret') || '';
+            const companyPhone = localStorage.getItem('companyPhone') || '';
+            const companyEmail = localStorage.getItem('companyEmail') || '';
+            const taxRate = parseFloat(localStorage.getItem('taxRate') || 20);
+            const invoicePrefix = localStorage.getItem('invoicePrefix') || 'FACT-';
+            const invoiceNumber = parseInt(localStorage.getItem('invoiceNumber') || 1);
+            const logo = localStorage.getItem('companyLogo');
+
+            document.getElementById('companyNameInvoice').textContent = companyName;
+            document.getElementById('companyAddressInvoice').textContent = companyAddress;
+            document.getElementById('companySiretInvoice').textContent = companySiret ? 'SIRET: ' + companySiret : '';
+            document.getElementById('companyPhoneInvoice').textContent = companyPhone ? 'Tél: ' + companyPhone : '';
+            document.getElementById('companyEmailInvoice').textContent = companyEmail ? 'Email: ' + companyEmail : '';
+            
+            const invoiceLogo = document.getElementById('invoiceLogo');
+            if (logo) {
+                invoiceLogo.src = logo;
+                invoiceLogo.classList.remove('hidden');
+            } else {
+                invoiceLogo.classList.add('hidden');
+            }
+
+            document.getElementById('clientInfo').innerHTML = `
+                <p><strong>${clientName}</strong></p>
+                <p>${clientAddress.replace(/\n/g, '<br>')}</p>
+            `;
+
+            const invoiceNumberStr = `${invoicePrefix}${String(invoiceNumber).padStart(3, '0')}`;
+            const invoiceDateStr = new Date().toISOString().split('T')[0];
+            
+            document.getElementById('invoiceNumber').textContent = `N° ${invoiceNumberStr}`;
+            document.getElementById('invoiceDate').textContent = new Date().toLocaleDateString('fr-FR');
+            document.getElementById('taxRateDisplay').textContent = taxRate;
+
+            let itemsHtml = '';
+            let totalHT = 0;
+
+            invoiceItems.forEach(item => {
+                totalHT += item.total;
+                itemsHtml += `
+                    <tr>
+                        <td>${item.designation}</td>
+                        <td style="text-align: center;">${item.quantity}</td>
+                        <td style="text-align: right;">${item.price.toFixed(2)}€</td>
+                        <td style="text-align: right;">${item.total.toFixed(2)}€</td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('invoiceItems').innerHTML = itemsHtml;
+
+            const tva = totalHT * (taxRate / 100);
+            const totalTTC = totalHT + tva;
+
+            document.getElementById('invoiceTotalHT').textContent = totalHT.toFixed(2) + '€';
+            document.getElementById('invoiceTVA').textContent = tva.toFixed(2) + '€';
+            document.getElementById('invoiceTotalTTC').textContent = totalTTC.toFixed(2) + '€';
+
+            document.getElementById('invoicePreview').classList.remove('hidden');
+
+            currentInvoiceData = {
+                invoice_number: invoiceNumberStr,
+                invoice_date: invoiceDateStr,
+                client_name: clientName,
+                client_address: clientAddress,
+                items: invoiceItems,
+                total_ht: totalHT,
+                total_tva: tva,
+                total_ttc: totalTTC,
+                tax_rate: taxRate
+            };
+        }
+
+        async function saveAndResetInvoice() {
+            if (!currentInvoiceData) {
+                alert('Aucune facture à sauvegarder');
+                return;
+            }
+
+            const { error } = await supabase
+                .from('invoices')
+                .insert({
+                    user_id: currentUser.id,
+                    invoice_number: currentInvoiceData.invoice_number,
+                    invoice_date: currentInvoiceData.invoice_date,
+                    client_name: currentInvoiceData.client_name,
+                    client_address: currentInvoiceData.client_address,
+                    items: currentInvoiceData.items,
+                    total_ht: currentInvoiceData.total_ht,
+                    total_tva: currentInvoiceData.total_tva,
+                    total_ttc: currentInvoiceData.total_ttc,
+                    tax_rate: currentInvoiceData.tax_rate
+                });
+
+            if (error) {
+                console.error('Error saving invoice:', error);
+                alert('Erreur lors de la sauvegarde de la facture: ' + error.message);
+                return;
+            }
+
+            const invoiceNumber = parseInt(localStorage.getItem('invoiceNumber') || 1);
+            localStorage.setItem('invoiceNumber', invoiceNumber + 1);
+
+            await loadInvoices();
+
+            alert('Facture ' + currentInvoiceData.invoice_number + ' sauvegardée avec succès.');
+
+            invoiceItems = [];
+            currentInvoiceData = null;
+            document.getElementById('productSelect').value = '';
+            document.getElementById('quantity').value = '1';
+            document.getElementById('clientSelect').value = '';
+            document.getElementById('clientName').value = '';
+            document.getElementById('clientAddress').value = '';
+            document.getElementById('manualClientFields').style.display = 'block';
+            document.getElementById('invoicePreview').classList.add('hidden');
+        }
+
+        function resetInvoice() {
+            invoiceItems = [];
+            currentInvoiceData = null;
+            document.getElementById('productSelect').value = '';
+            document.getElementById('quantity').value = '1';
+            document.getElementById('clientSelect').value = '';
+            document.getElementById('clientName').value = '';
+            document.getElementById('clientAddress').value = '';
+            document.getElementById('manualClientFields').style.display = 'block';
+            document.getElementById('invoicePreview').classList.add('hidden');
+        }
+
+        async function loadInvoices() {
+            const { data, error } = await supabase
+                .from('invoices')
+                .select('*')
+                .eq('user_id', currentUser.id)
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error('Error loading invoices:', error);
+                return;
+            }
+
+            invoicesData = data;
+            filteredInvoices = data;
+
+            if (invoicesData.length > 0) {
+                document.getElementById('searchInvoicesContainer').style.display = 'flex';
+                setupInvoicesSearchListeners();
+            } else {
+                document.getElementById('searchInvoicesContainer').style.display = 'none';
+            }
+
+            displayInvoices();
+        }
+
+        function setupInvoicesSearchListeners() {
+            const searchInput = document.getElementById('searchInvoicesInput');
+            const clearButton = document.getElementById('clearSearchInvoices');
+
+            if (!searchInput || !clearButton) return;
+
+            searchInput.removeEventListener('input', handleInvoicesSearchInput);
+            searchInput.addEventListener('input', handleInvoicesSearchInput);
+
+            clearButton.removeEventListener('click', handleInvoicesClearSearch);
+            clearButton.addEventListener('click', handleInvoicesClearSearch);
+        }
+
+        function handleInvoicesSearchInput(e) {
+            const query = e.target.value.trim();
+            const clearButton = document.getElementById('clearSearchInvoices');
+            
+            if (query.length > 0) {
+                clearButton.classList.add('show');
+            } else {
+                clearButton.classList.remove('show');
+            }
+
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                filterInvoices(query);
+            }, 300);
+        }
+
+        function handleInvoicesClearSearch() {
+            const searchInput = document.getElementById('searchInvoicesInput');
+            const clearButton = document.getElementById('clearSearchInvoices');
+            
+            searchInput.value = '';
+            clearButton.classList.remove('show');
+            filterInvoices('');
+            searchInput.focus();
+        }
+
+        function filterInvoices(query) {
+            const searchResultsInfo = document.getElementById('searchInvoicesResultsInfo');
+            
+            if (!query || query.length === 0) {
+                filteredInvoices = invoicesData;
+                searchResultsInfo.style.display = 'none';
+            } else {
+                const lowerQuery = query.toLowerCase();
+                
+                filteredInvoices = invoicesData.filter(invoice => {
+                    return (
+                        invoice.invoice_number.toLowerCase().includes(lowerQuery) ||
+                        invoice.client_name.toLowerCase().includes(lowerQuery)
+                    );
+                });
+
+                searchResultsInfo.style.display = 'block';
+                searchResultsInfo.textContent = `${filteredInvoices.length} facture${filteredInvoices.length > 1 ? 's' : ''} trouvée${filteredInvoices.length > 1 ? 's' : ''} sur ${invoicesData.length}`;
+            }
+
+            displayInvoices();
+        }
+
+        function displayInvoices() {
+            const container = document.getElementById('invoicesTableContainer');
+            
+            if (!container) {
+                console.error('Container invoicesTableContainer not found!');
+                return;
+            }
+            
+            if (invoicesData.length === 0) {
+                container.innerHTML = '<p>Aucune facture enregistrée. Créez votre première facture dans l\'onglet Facturation.</p>';
+                return;
+            }
+
+            if (filteredInvoices.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results-message">
+                        <p>Aucune facture ne correspond à votre recherche.</p>
+                        <small>Essayez avec d'autres mots-clés ou effacez la recherche.</small>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<table class="data-table"><thead><tr>';
+            html += '<th>N° Facture</th>';
+            html += '<th>Date</th>';
+            html += '<th>Client</th>';
+            html += '<th class="text-right">Montant HT</th>';
+            html += '<th class="text-right">Montant TTC</th>';
+            html += '<th style="width: 100px;">Actions</th>';
+            html += '</tr></thead><tbody>';
+
+            filteredInvoices.forEach(invoice => {
+                const invoiceDate = new Date(invoice.invoice_date).toLocaleDateString('fr-FR');
+                
+                html += '<tr>';
+                html += `<td><strong>${invoice.invoice_number}</strong></td>`;
+                html += `<td>${invoiceDate}</td>`;
+                html += `<td>${invoice.client_name}</td>`;
+                html += `<td class="text-right">${parseFloat(invoice.total_ht).toFixed(2)}€</td>`;
+                html += `<td class="text-right">${parseFloat(invoice.total_ttc).toFixed(2)}€</td>`;
+                html += `<td>
+                    <button class="btn btn-small btn-view-invoice" data-invoice-id="${invoice.id}">Voir</button>
+                </td>`;
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+
+            document.querySelectorAll('.btn-view-invoice').forEach(button => {
+                button.addEventListener('click', function() {
+                    const invoiceId = this.getAttribute('data-invoice-id');
+                    viewInvoice(invoiceId);
+                });
+            });
+
+            console.log('Invoices displayed:', filteredInvoices.length, 'of', invoicesData.length);
+        }
+
+        function viewInvoice(invoiceId) {
+            const invoice = invoicesData.find(inv => String(inv.id) === String(invoiceId));
+            
+            if (!invoice) {
+                alert('Facture non trouvée');
+                return;
+            }
+
+            const companyName = localStorage.getItem('companyName') || 'Votre entreprise';
+            const companyAddress = localStorage.getItem('companyAddress') || '';
+            const companySiret = localStorage.getItem('companySiret') || '';
+            const companyPhone = localStorage.getItem('companyPhone') || '';
+            const companyEmail = localStorage.getItem('companyEmail') || '';
+            const logo = localStorage.getItem('companyLogo');
+
+            let html = '<div class="invoice-container">';
+            
+            html += '<div class="invoice-header">';
+            html += '<div>';
+            if (logo) {
+                html += `<img src="${logo}" class="invoice-logo" alt="Logo">`;
+            }
+            html += '</div>';
+            html += '<div class="invoice-title">';
+            html += '<h2>FACTURE</h2>';
+            html += `<p>N° ${invoice.invoice_number}</p>`;
+            html += `<p>${new Date(invoice.invoice_date).toLocaleDateString('fr-FR')}</p>`;
+            html += '</div>';
+            html += '</div>';
+
+            html += '<div class="invoice-info">';
+            html += '<div class="info-block">';
+            html += '<h4>De</h4>';
+            html += `<p><strong>${companyName}</strong></p>`;
+            html += `<p>${companyAddress}</p>`;
+            if (companySiret) html += `<p>SIRET: ${companySiret}</p>`;
+            if (companyPhone) html += `<p>Tél: ${companyPhone}</p>`;
+            if (companyEmail) html += `<p>Email: ${companyEmail}</p>`;
+            html += '</div>';
+            html += '<div class="info-block">';
+            html += '<h4>À</h4>';
+            html += `<p><strong>${invoice.client_name}</strong></p>`;
+            html += `<p>${invoice.client_address.replace(/\n/g, '<br>')}</p>`;
+            html += '</div>';
+            html += '</div>';
+
+            html += '<table class="invoice-table">';
+            html += '<thead><tr>';
+            html += '<th>Désignation</th>';
+            html += '<th style="text-align: center;">Quantité</th>';
+            html += '<th style="text-align: right;">Prix HT</th>';
+            html += '<th style="text-align: right;">Total HT</th>';
+            html += '</tr></thead>';
+            html += '<tbody>';
+
+            invoice.items.forEach(item => {
+                html += '<tr>';
+                html += `<td>${item.designation}</td>`;
+                html += `<td style="text-align: center;">${item.quantity}</td>`;
+                html += `<td style="text-align: right;">${parseFloat(item.price).toFixed(2)}€</td>`;
+                html += `<td style="text-align: right;">${parseFloat(item.total).toFixed(2)}€</td>`;
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+
+            html += '<div class="invoice-totals">';
+            html += '<div class="invoice-totals-row">';
+            html += '<span>Total HT</span>';
+            html += `<span>${parseFloat(invoice.total_ht).toFixed(2)}€</span>`;
+            html += '</div>';
+            html += '<div class="invoice-totals-row">';
+            html += `<span>TVA (${parseFloat(invoice.tax_rate).toFixed(1)}%)</span>`;
+            html += `<span>${parseFloat(invoice.total_tva).toFixed(2)}€</span>`;
+            html += '</div>';
+            html += '<div class="invoice-totals-row">';
+            html += '<span>Total TTC</span>';
+            html += `<span>${parseFloat(invoice.total_ttc).toFixed(2)}€</span>`;
+            html += '</div>';
+            html += '</div>';
+
+            html += '</div>';
+
+            document.getElementById('viewInvoiceContainer').innerHTML = html;
+            document.getElementById('viewInvoiceModal').classList.add('show');
+        }
+
+        function closeViewInvoiceModal() {
+            document.getElementById('viewInvoiceModal').classList.remove('show');
+        }
+
+        function printViewedInvoice() {
+            const originalContent = document.body.innerHTML;
+            const printContent = document.getElementById('viewInvoiceContainer').innerHTML;
+            
+            document.body.innerHTML = printContent;
+            window.print();
+            document.body.innerHTML = originalContent;
+            
+            location.reload();
+        }
+
+        async function loadClients() {
+            const { data, error } = await supabase
+                .from('clients')
+                .select('*')
+                .eq('user_id', currentUser.id)
+                .order('name');
+
+            if (error) {
+                console.error('Error loading clients:', error);
+                return;
+            }
+
+            clientsData = data;
+            filteredClients = data;
+
+            if (clientsData.length > 0) {
+                document.getElementById('searchClientsContainer').style.display = 'flex';
+                setupClientsSearchListeners();
+            } else {
+                document.getElementById('searchClientsContainer').style.display = 'none';
+            }
+
+            displayClients();
+        }
+
+        function setupClientsSearchListeners() {
+            const searchInput = document.getElementById('searchClientsInput');
+            const clearButton = document.getElementById('clearSearchClients');
+
+            if (!searchInput || !clearButton) return;
+
+            searchInput.removeEventListener('input', handleClientsSearchInput);
+            searchInput.addEventListener('input', handleClientsSearchInput);
+
+            clearButton.removeEventListener('click', handleClientsClearSearch);
+            clearButton.addEventListener('click', handleClientsClearSearch);
+        }
+
+        function handleClientsSearchInput(e) {
+            const query = e.target.value.trim();
+            const clearButton = document.getElementById('clearSearchClients');
+            
+            if (query.length > 0) {
+                clearButton.classList.add('show');
+            } else {
+                clearButton.classList.remove('show');
+            }
+
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                filterClients(query);
+            }, 300);
+        }
+
+        function handleClientsClearSearch() {
+            const searchInput = document.getElementById('searchClientsInput');
+            const clearButton = document.getElementById('clearSearchClients');
+            
+            searchInput.value = '';
+            clearButton.classList.remove('show');
+            filterClients('');
+            searchInput.focus();
+        }
+
+        function filterClients(query) {
+            const searchResultsInfo = document.getElementById('searchClientsResultsInfo');
+            
+            if (!query || query.length === 0) {
+                filteredClients = clientsData;
+                searchResultsInfo.style.display = 'none';
+            } else {
+                const lowerQuery = query.toLowerCase();
+                
+                filteredClients = clientsData.filter(client => {
+                    return (
+                        client.name.toLowerCase().includes(lowerQuery) ||
+                        (client.email && client.email.toLowerCase().includes(lowerQuery)) ||
+                        (client.phone && client.phone.toLowerCase().includes(lowerQuery))
+                    );
+                });
+
+                searchResultsInfo.style.display = 'block';
+                searchResultsInfo.textContent = `${filteredClients.length} client${filteredClients.length > 1 ? 's' : ''} trouvé${filteredClients.length > 1 ? 's' : ''} sur ${clientsData.length}`;
+            }
+
+            displayClients();
+        }
+
+        function displayClients() {
+            const container = document.getElementById('clientsTableContainer');
+            
+            if (!container) {
+                console.error('Container clientsTableContainer not found!');
+                return;
+            }
+            
+            if (clientsData.length === 0) {
+                container.innerHTML = '<p>Aucun client enregistré. Cliquez sur "+ Ajouter un client" pour commencer.</p>';
+                return;
+            }
+
+            if (filteredClients.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results-message">
+                        <p>Aucun client ne correspond à votre recherche.</p>
+                        <small>Essayez avec d'autres mots-clés ou effacez la recherche.</small>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<table class="data-table"><thead><tr>';
+            html += '<th>Nom</th>';
+            html += '<th>Adresse</th>';
+            html += '<th>Email</th>';
+            html += '<th>Téléphone</th>';
+            html += '<th style="width: 180px;">Actions</th>';
+            html += '</tr></thead><tbody>';
+
+            filteredClients.forEach(client => {
+                html += '<tr>';
+                html += `<td><strong>${client.name}</strong></td>`;
+                html += `<td>${client.address.substring(0, 50)}${client.address.length > 50 ? '...' : ''}</td>`;
+                html += `<td>${client.email || '-'}</td>`;
+                html += `<td>${client.phone || '-'}</td>`;
+                html += `<td>
+                    <div class="action-buttons">
+                        <button class="btn btn-small btn-edit-client" data-client-id="${client.id}">Éditer</button>
+                        <button class="btn btn-small btn-danger btn-delete-client" data-client-id="${client.id}">Supprimer</button>
+                    </div>
+                </td>`;
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+
+            document.querySelectorAll('.btn-edit-client').forEach(button => {
+                button.addEventListener('click', function() {
+                    const clientId = this.getAttribute('data-client-id');
+                    editClient(clientId);
+                });
+            });
+
+            document.querySelectorAll('.btn-delete-client').forEach(button => {
+                button.addEventListener('click', function() {
+                    const clientId = this.getAttribute('data-client-id');
+                    deleteClient(clientId);
+                });
+            });
+
+            console.log('Clients displayed:', filteredClients.length, 'of', clientsData.length);
+        }
+
+        function showAddClientModal() {
+            document.getElementById('clientModalTitle').textContent = 'Ajouter un client';
+            document.getElementById('editClientId').value = '';
+            document.getElementById('clientNameModal').value = '';
+            document.getElementById('clientAddressModal').value = '';
+            document.getElementById('clientEmailModal').value = '';
+            document.getElementById('clientPhoneModal').value = '';
+            document.getElementById('clientSiretModal').value = '';
+            document.getElementById('clientModal').classList.add('show');
+        }
+
+        function editClient(clientId) {
+            const client = clientsData.find(c => String(c.id) === String(clientId));
+            
+            if (!client) {
+                alert('Client non trouvé');
+                return;
+            }
+
+            document.getElementById('clientModalTitle').textContent = 'Éditer le client';
+            document.getElementById('editClientId').value = client.id;
+            document.getElementById('clientNameModal').value = client.name;
+            document.getElementById('clientAddressModal').value = client.address;
+            document.getElementById('clientEmailModal').value = client.email || '';
+            document.getElementById('clientPhoneModal').value = client.phone || '';
+            document.getElementById('clientSiretModal').value = client.siret || '';
+            document.getElementById('clientModal').classList.add('show');
+        }
+
+        function closeClientModal() {
+            document.getElementById('clientModal').classList.remove('show');
+        }
+
+        async function saveClient(e) {
+            e.preventDefault();
+
+            const clientId = document.getElementById('editClientId').value;
+            const name = document.getElementById('clientNameModal').value;
+            const address = document.getElementById('clientAddressModal').value;
+            const email = document.getElementById('clientEmailModal').value || null;
+            const phone = document.getElementById('clientPhoneModal').value || null;
+            const siret = document.getElementById('clientSiretModal').value || null;
+
+            if (!name || !address) {
+                alert('Veuillez remplir les champs obligatoires (nom et adresse)');
+                return;
+            }
+
+            let error;
+
+            if (clientId) {
+                const result = await supabase
+                    .from('clients')
+                    .update({
+                        name: name,
+                        address: address,
+                        email: email,
+                        phone: phone,
+                        siret: siret
+                    })
+                    .eq('id', clientId);
+                
+                error = result.error;
+            } else {
+                const result = await supabase
+                    .from('clients')
+                    .insert({
+                        user_id: currentUser.id,
+                        name: name,
+                        address: address,
+                        email: email,
+                        phone: phone,
+                        siret: siret
+                    });
+                
+                error = result.error;
+            }
+
+            if (error) {
+                console.error('Error saving client:', error);
+                alert('Erreur lors de la sauvegarde: ' + error.message);
+                return;
+            }
+
+            closeClientModal();
+
+            await loadClients();
+            await loadClientsToSelect();
+
+            alert(clientId ? 'Client mis à jour avec succès.' : 'Client ajouté avec succès.');
+        }
+
+        function deleteClient(clientId) {
+            const client = clientsData.find(c => String(c.id) === String(clientId));
+            
+            if (!client) {
+                alert('Client non trouvé');
+                return;
+            }
+
+            clientToDelete = clientId;
+
+            document.getElementById('deleteClientInfo').textContent = client.name;
+            document.getElementById('deleteClientModal').classList.add('show');
+        }
+
+        function closeDeleteClientModal() {
+            document.getElementById('deleteClientModal').classList.remove('show');
+            clientToDelete = null;
+        }
+
+        async function confirmDeleteClient() {
+            if (!clientToDelete) {
+                alert('Erreur: Aucun client sélectionné');
+                return;
+            }
+
+            const { error } = await supabase
+                .from('clients')
+                .delete()
+                .eq('id', clientToDelete);
+
+            if (error) {
+                console.error('Delete error:', error);
+                alert('Erreur lors de la suppression: ' + error.message);
+                return;
+            }
+
+            closeDeleteClientModal();
+
+            await loadClients();
+            await loadClientsToSelect();
+
+            alert('Client supprimé avec succès.');
+        }
+
+        function setupLogoUpload() {
+            const logoInput = document.getElementById('logoInput');
+            logoInput.addEventListener('change', handleLogoUpload);
+
+            const savedLogo = localStorage.getItem('companyLogo');
+            if (savedLogo) {
+                displayLogoPreview(savedLogo);
+            }
+        }
+
+        function handleLogoUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (!file.type.match('image.*')) {
+                alert('Veuillez sélectionner une image');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const logoData = event.target.result;
+                localStorage.setItem('companyLogo', logoData);
+                displayLogoPreview(logoData);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function displayLogoPreview(logoData) {
+            document.getElementById('logoPreviewImg').src = logoData;
+            document.getElementById('logoPreview').classList.add('show');
+        }
+
+        function removeLogo() {
+            localStorage.removeItem('companyLogo');
+            document.getElementById('logoPreview').classList.remove('show');
+            document.getElementById('logoInput').value = '';
+        }
+
+        function loadSettings() {
+            document.getElementById('settingsCompanyName').value = localStorage.getItem('companyName') || '';
+            document.getElementById('settingsSiret').value = localStorage.getItem('companySiret') || '';
+            document.getElementById('settingsAddress').value = localStorage.getItem('companyAddress') || '';
+            document.getElementById('settingsPhone').value = localStorage.getItem('companyPhone') || '';
+            document.getElementById('settingsEmail').value = localStorage.getItem('companyEmail') || '';
+            document.getElementById('settingsTaxRate').value = localStorage.getItem('taxRate') || '20';
+            document.getElementById('settingsTaxIntra').value = localStorage.getItem('taxIntra') || '';
+            document.getElementById('settingsInvoicePrefix').value = localStorage.getItem('invoicePrefix') || 'FACT-';
+            document.getElementById('settingsInvoiceStart').value = localStorage.getItem('invoiceNumber') || '1';
+        }
+
+        function saveSettings() {
+            localStorage.setItem('companyName', document.getElementById('settingsCompanyName').value);
+            localStorage.setItem('companySiret', document.getElementById('settingsSiret').value);
+            localStorage.setItem('companyAddress', document.getElementById('settingsAddress').value);
+            localStorage.setItem('companyPhone', document.getElementById('settingsPhone').value);
+            localStorage.setItem('companyEmail', document.getElementById('settingsEmail').value);
+            localStorage.setItem('taxRate', document.getElementById('settingsTaxRate').value);
+            localStorage.setItem('taxIntra', document.getElementById('settingsTaxIntra').value);
+            localStorage.setItem('invoicePrefix', document.getElementById('settingsInvoicePrefix').value);
+            localStorage.setItem('invoiceNumber', document.getElementById('settingsInvoiceStart').value);
+
+            alert('Paramètres enregistrés avec succès');
+            closeSettingsModal();
+        }
     </script>
 </body>
 </html>

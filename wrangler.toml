@@ -1,0 +1,13 @@
+name = "clarity"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+# Base de données D1
+[[d1_databases]]
+binding = "DB"
+database_name = "clarity-db"
+database_id = "5e9f7e38-bff4-4d28-b393-7ead87d41044"
+
+# Variables d'environnement
+[vars]
+ENVIRONMENT = "production"

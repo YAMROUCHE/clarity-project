@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Buttons</title>
+</head>
+<body>
+    <h1>Test des boutons</h1>
+    <button id="testBtn">Cliquez-moi</button>
+
+    <script>
+        console.log('Script chargé');
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM chargé');
+
+            const btn = document.getElementById('testBtn');
+            console.log('Bouton:', btn);
+
+            if (btn) {
+                btn.addEventListener('click', function() {
+                    console.log('CLIC DÉTECTÉ !');
+                    alert('Ça marche !');
+                });
+                console.log('Event listener attaché');
+            } else {
+                console.error('Bouton non trouvé !');
+            }
+        });
+    </script>
+</body>
+</html>

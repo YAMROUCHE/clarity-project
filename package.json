@@ -1,0 +1,18 @@
+{
+  "name": "clarity",
+  "version": "4.0.0",
+  "description": "Application SaaS de gestion de catalogue produits et facturation",
+  "main": "worker.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:create": "wrangler d1 create clarity-db",
+    "db:init": "wrangler d1 execute clarity-db --file=./schema.sql"
+  },
+  "keywords": ["cloudflare", "workers", "d1"],
+  "author": "Agentic Solutions",
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^3.80.0"
+  }
+}
