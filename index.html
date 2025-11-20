@@ -8,6 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Clarity - Gestion professionnelle</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -1167,6 +1168,7 @@
             <button class="tab" onclick="switchTab('facturation')">Facturation</button>
             <button class="tab" onclick="switchTab('historique')">Historique</button>
             <button class="tab" onclick="switchTab('clients')">Clients</button>
+            <button class="tab" onclick="switchTab('comptabilite')">Comptabilité</button>
         </div>
 
         <div class="content">
@@ -1412,6 +1414,78 @@
                 <div id="searchClientsResultsInfo" class="search-results-info" style="display: none;"></div>
 
                 <div id="clientsTableContainer"></div>
+            </div>
+
+            <!-- COMPTABILITÉ -->
+            <div class="tab-content" id="tab-comptabilite">
+                <h2>Comptabilité</h2>
+
+                <!-- KPIs Dashboard -->
+                <div class="stats-container" style="margin-bottom: 30px;">
+                    <div class="stat-card">
+                        <div class="stat-value" id="caMonthly">0.00€</div>
+                        <div class="stat-label">CA Mensuel HT</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="caAnnual">0.00€</div>
+                        <div class="stat-label">CA Annuel HT</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="marginTotal">0.00€</div>
+                        <div class="stat-label">Marge Brute</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="invoiceCount">0</div>
+                        <div class="stat-label">Nombre de Factures</div>
+                    </div>
+                </div>
+
+                <!-- Graphiques -->
+                <div class="card" style="margin-bottom: 30px;">
+                    <h3>Évolution du Chiffre d'Affaires</h3>
+                    <canvas id="revenueChart" style="max-height: 300px;"></canvas>
+                </div>
+
+                <div class="card" style="margin-bottom: 30px;">
+                    <h3>Évolution de la Marge</h3>
+                    <canvas id="marginChart" style="max-height: 300px;"></canvas>
+                </div>
+
+                <!-- Journal des ventes -->
+                <div class="card" style="margin-bottom: 30px;">
+                    <h3>Journal des Ventes</h3>
+
+                    <div style="display: flex; gap: 15px; margin-bottom: 20px; align-items: center;">
+                        <select id="periodFilter" onchange="filterSalesJournal()" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            <option value="all">Toutes les périodes</option>
+                            <option value="today">Aujourd'hui</option>
+                            <option value="month">Ce mois-ci</option>
+                            <option value="year">Cette année</option>
+                        </select>
+
+                        <input type="text" id="searchSalesJournal" placeholder="Rechercher..." style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+
+                        <button class="btn" onclick="exportSalesJournal()">📊 Export Excel</button>
+                    </div>
+
+                    <div id="salesJournalTable"></div>
+                </div>
+
+                <!-- Analyses de rentabilité -->
+                <div class="card" style="margin-bottom: 30px;">
+                    <h3>Top 10 Produits par Marge</h3>
+                    <div id="topProductsByMargin"></div>
+                </div>
+
+                <div class="card" style="margin-bottom: 30px;">
+                    <h3>Marge par Art Group</h3>
+                    <div id="marginByArtGroup"></div>
+                </div>
+
+                <div class="card" style="margin-bottom: 30px;">
+                    <h3>Top 10 Clients par CA</h3>
+                    <div id="topClientsByRevenue"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -3218,6 +3292,625 @@
             alert('Paramètres enregistrés avec succès');
             closeSettingsModal();
         }
+
+        // ============================================
+        // MODULE COMPTABILITÉ
+        // ============================================
+
+        let revenueChart = null;
+        let marginChart = null;
+        let filteredSalesJournal = [];
+
+        // Charger les données comptables lors du switch vers l'onglet
+        function loadAccountingData() {
+            calculateKPIs();
+            createRevenueChart();
+            createMarginChart();
+            loadSalesJournal();
+            loadProfitabilityAnalysis();
+        }
+
+        // Calculer les KPIs
+        function calculateKPIs() {
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+
+            let caMonthly = 0;
+            let caAnnual = 0;
+            let marginTotal = 0;
+            let invoiceCount = invoicesData.length;
+
+            invoicesData.forEach(invoice => {
+                const invoiceDate = new Date(invoice.invoice_date || invoice.created_at);
+                const totalHT = parseFloat(invoice.total_ht) || 0;
+
+                caAnnual += totalHT;
+
+                if (invoiceDate.getMonth() === currentMonth && invoiceDate.getFullYear() === currentYear) {
+                    caMonthly += totalHT;
+                }
+
+                // Calculer la marge
+                const items = typeof invoice.items === 'string' ? JSON.parse(invoice.items) : invoice.items;
+                items.forEach(item => {
+                    const product = productsData.find(p => p.id === item.product_id);
+                    if (product) {
+                        const purchasePrice = parseFloat(product.purchase_price) || 0;
+                        const sellingPrice = parseFloat(item.price) || 0;
+                        const quantity = parseInt(item.quantity) || 0;
+                        marginTotal += (sellingPrice - purchasePrice) * quantity;
+                    }
+                });
+            });
+
+            document.getElementById('caMonthly').textContent = caMonthly.toFixed(2) + '€';
+            document.getElementById('caAnnual').textContent = caAnnual.toFixed(2) + '€';
+            document.getElementById('marginTotal').textContent = marginTotal.toFixed(2) + '€';
+            document.getElementById('invoiceCount').textContent = invoiceCount;
+        }
+
+        // Créer le graphique d'évolution du CA
+        function createRevenueChart() {
+            const ctx = document.getElementById('revenueChart');
+            if (!ctx) return;
+
+            if (revenueChart) {
+                revenueChart.destroy();
+            }
+
+            // Grouper par mois
+            const monthlyRevenue = {};
+            invoicesData.forEach(invoice => {
+                const date = new Date(invoice.invoice_date || invoice.created_at);
+                const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                monthlyRevenue[monthKey] = (monthlyRevenue[monthKey] || 0) + parseFloat(invoice.total_ht || 0);
+            });
+
+            const sortedMonths = Object.keys(monthlyRevenue).sort();
+            const labels = sortedMonths.map(m => {
+                const [year, month] = m.split('-');
+                return `${month}/${year}`;
+            });
+            const data = sortedMonths.map(m => monthlyRevenue[m]);
+
+            revenueChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Chiffre d\'Affaires HT',
+                        data: data,
+                        borderColor: '#000000',
+                        backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toFixed(0) + '€';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Créer le graphique d'évolution de la marge
+        function createMarginChart() {
+            const ctx = document.getElementById('marginChart');
+            if (!ctx) return;
+
+            if (marginChart) {
+                marginChart.destroy();
+            }
+
+            // Grouper par mois
+            const monthlyMargin = {};
+            invoicesData.forEach(invoice => {
+                const date = new Date(invoice.invoice_date || invoice.created_at);
+                const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+
+                const items = typeof invoice.items === 'string' ? JSON.parse(invoice.items) : invoice.items;
+                items.forEach(item => {
+                    const product = productsData.find(p => p.id === item.product_id);
+                    if (product) {
+                        const purchasePrice = parseFloat(product.purchase_price) || 0;
+                        const sellingPrice = parseFloat(item.price) || 0;
+                        const quantity = parseInt(item.quantity) || 0;
+                        const margin = (sellingPrice - purchasePrice) * quantity;
+                        monthlyMargin[monthKey] = (monthlyMargin[monthKey] || 0) + margin;
+                    }
+                });
+            });
+
+            const sortedMonths = Object.keys(monthlyMargin).sort();
+            const labels = sortedMonths.map(m => {
+                const [year, month] = m.split('-');
+                return `${month}/${year}`;
+            });
+            const data = sortedMonths.map(m => monthlyMargin[m]);
+
+            marginChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Marge Brute',
+                        data: data,
+                        backgroundColor: '#000000',
+                        borderColor: '#000000',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toFixed(0) + '€';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Charger le journal des ventes
+        function loadSalesJournal() {
+            const salesJournal = [];
+
+            invoicesData.forEach(invoice => {
+                const items = typeof invoice.items === 'string' ? JSON.parse(invoice.items) : invoice.items;
+                items.forEach(item => {
+                    const product = productsData.find(p => p.id === item.product_id);
+                    if (product) {
+                        salesJournal.push({
+                            date: invoice.invoice_date || invoice.created_at,
+                            invoiceNumber: invoice.invoice_number,
+                            clientName: invoice.client_name,
+                            productRef: product.reference,
+                            productName: product.designation,
+                            quantity: item.quantity,
+                            priceHT: parseFloat(item.price) || 0,
+                            totalHT: parseFloat(item.total) || 0,
+                            purchasePrice: parseFloat(product.purchase_price) || 0,
+                            margin: (parseFloat(item.price) || 0) - (parseFloat(product.purchase_price) || 0)
+                        });
+                    }
+                });
+            });
+
+            filteredSalesJournal = salesJournal.sort((a, b) => new Date(b.date) - new Date(a.date));
+            displaySalesJournal();
+        }
+
+        // Afficher le journal des ventes
+        function displaySalesJournal() {
+            const container = document.getElementById('salesJournalTable');
+            if (!container) return;
+
+            if (filteredSalesJournal.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">Aucune vente enregistrée</p>';
+                return;
+            }
+
+            let html = `
+                <table class="product-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>N° Facture</th>
+                            <th>Client</th>
+                            <th>Référence</th>
+                            <th>Produit</th>
+                            <th>Qté</th>
+                            <th>Prix HT</th>
+                            <th>Total HT</th>
+                            <th>Marge</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            filteredSalesJournal.forEach(sale => {
+                const date = new Date(sale.date).toLocaleDateString('fr-FR');
+                const marginPercent = sale.priceHT > 0 ? ((sale.margin / sale.priceHT) * 100).toFixed(1) : 0;
+
+                html += `
+                    <tr>
+                        <td>${date}</td>
+                        <td>${sale.invoiceNumber}</td>
+                        <td>${sale.clientName}</td>
+                        <td>${sale.productRef}</td>
+                        <td>${sale.productName}</td>
+                        <td>${sale.quantity}</td>
+                        <td>${sale.priceHT.toFixed(2)}€</td>
+                        <td>${sale.totalHT.toFixed(2)}€</td>
+                        <td>${sale.margin.toFixed(2)}€ (${marginPercent}%)</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // Filtrer le journal des ventes
+        function filterSalesJournal() {
+            const period = document.getElementById('periodFilter').value;
+            const search = document.getElementById('searchSalesJournal').value.toLowerCase();
+
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+            const startOfYear = new Date(now.getFullYear(), 0, 1);
+
+            filteredSalesJournal = invoicesData.flatMap(invoice => {
+                const items = typeof invoice.items === 'string' ? JSON.parse(invoice.items) : invoice.items;
+                return items.map(item => {
+                    const product = productsData.find(p => p.id === item.product_id);
+                    if (!product) return null;
+
+                    return {
+                        date: invoice.invoice_date || invoice.created_at,
+                        invoiceNumber: invoice.invoice_number,
+                        clientName: invoice.client_name,
+                        productRef: product.reference,
+                        productName: product.designation,
+                        quantity: item.quantity,
+                        priceHT: parseFloat(item.price) || 0,
+                        totalHT: parseFloat(item.total) || 0,
+                        purchasePrice: parseFloat(product.purchase_price) || 0,
+                        margin: (parseFloat(item.price) || 0) - (parseFloat(product.purchase_price) || 0)
+                    };
+                }).filter(sale => {
+                    if (!sale) return false;
+
+                    const saleDate = new Date(sale.date);
+
+                    // Filtre par période
+                    if (period === 'today' && saleDate < today) return false;
+                    if (period === 'month' && saleDate < startOfMonth) return false;
+                    if (period === 'year' && saleDate < startOfYear) return false;
+
+                    // Filtre par recherche
+                    if (search) {
+                        const searchFields = [
+                            sale.invoiceNumber,
+                            sale.clientName,
+                            sale.productRef,
+                            sale.productName
+                        ].join(' ').toLowerCase();
+
+                        if (!searchFields.includes(search)) return false;
+                    }
+
+                    return true;
+                });
+            });
+
+            filteredSalesJournal.sort((a, b) => new Date(b.date) - new Date(a.date));
+            displaySalesJournal();
+        }
+
+        // Ajouter listener pour la recherche dans le journal
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchSalesJournal');
+            if (searchInput) {
+                searchInput.addEventListener('input', filterSalesJournal);
+            }
+        });
+
+        // Analyses de rentabilité
+        function loadProfitabilityAnalysis() {
+            loadTopProductsByMargin();
+            loadMarginByArtGroup();
+            loadTopClientsByRevenue();
+        }
+
+        // Top 10 produits par marge
+        function loadTopProductsByMargin() {
+            const productMargins = {};
+
+            invoicesData.forEach(invoice => {
+                const items = typeof invoice.items === 'string' ? JSON.parse(invoice.items) : invoice.items;
+                items.forEach(item => {
+                    const product = productsData.find(p => p.id === item.product_id);
+                    if (product) {
+                        const purchasePrice = parseFloat(product.purchase_price) || 0;
+                        const sellingPrice = parseFloat(item.price) || 0;
+                        const quantity = parseInt(item.quantity) || 0;
+                        const margin = (sellingPrice - purchasePrice) * quantity;
+
+                        if (!productMargins[product.id]) {
+                            productMargins[product.id] = {
+                                reference: product.reference,
+                                designation: product.designation,
+                                totalMargin: 0,
+                                quantitySold: 0
+                            };
+                        }
+
+                        productMargins[product.id].totalMargin += margin;
+                        productMargins[product.id].quantitySold += quantity;
+                    }
+                });
+            });
+
+            const sortedProducts = Object.values(productMargins)
+                .sort((a, b) => b.totalMargin - a.totalMargin)
+                .slice(0, 10);
+
+            const container = document.getElementById('topProductsByMargin');
+            if (!container) return;
+
+            if (sortedProducts.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666;">Aucune donnée disponible</p>';
+                return;
+            }
+
+            let html = `
+                <table class="product-table">
+                    <thead>
+                        <tr>
+                            <th>Référence</th>
+                            <th>Désignation</th>
+                            <th>Qté Vendue</th>
+                            <th>Marge Totale</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            sortedProducts.forEach((product, index) => {
+                html += `
+                    <tr>
+                        <td>${product.reference}</td>
+                        <td>${product.designation}</td>
+                        <td>${product.quantitySold}</td>
+                        <td>${product.totalMargin.toFixed(2)}€</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // Marge par Art Group
+        function loadMarginByArtGroup() {
+            const artGroupMargins = {};
+
+            invoicesData.forEach(invoice => {
+                const items = typeof invoice.items === 'string' ? JSON.parse(invoice.items) : invoice.items;
+                items.forEach(item => {
+                    const product = productsData.find(p => p.id === item.product_id);
+                    if (product) {
+                        const artGroup = product.reference.split('-')[0] || 'N/A';
+                        const purchasePrice = parseFloat(product.purchase_price) || 0;
+                        const sellingPrice = parseFloat(item.price) || 0;
+                        const quantity = parseInt(item.quantity) || 0;
+                        const margin = (sellingPrice - purchasePrice) * quantity;
+                        const totalHT = sellingPrice * quantity;
+
+                        if (!artGroupMargins[artGroup]) {
+                            artGroupMargins[artGroup] = {
+                                totalMargin: 0,
+                                totalRevenue: 0
+                            };
+                        }
+
+                        artGroupMargins[artGroup].totalMargin += margin;
+                        artGroupMargins[artGroup].totalRevenue += totalHT;
+                    }
+                });
+            });
+
+            const sortedGroups = Object.entries(artGroupMargins)
+                .map(([group, data]) => ({
+                    group,
+                    margin: data.totalMargin,
+                    revenue: data.totalRevenue,
+                    marginPercent: data.totalRevenue > 0 ? (data.totalMargin / data.totalRevenue * 100) : 0
+                }))
+                .sort((a, b) => b.margin - a.margin);
+
+            const container = document.getElementById('marginByArtGroup');
+            if (!container) return;
+
+            if (sortedGroups.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666;">Aucune donnée disponible</p>';
+                return;
+            }
+
+            let html = `
+                <table class="product-table">
+                    <thead>
+                        <tr>
+                            <th>Art Group</th>
+                            <th>CA HT</th>
+                            <th>Marge Totale</th>
+                            <th>% Marge</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            sortedGroups.forEach(group => {
+                html += `
+                    <tr>
+                        <td>${group.group}</td>
+                        <td>${group.revenue.toFixed(2)}€</td>
+                        <td>${group.margin.toFixed(2)}€</td>
+                        <td>${group.marginPercent.toFixed(1)}%</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // Top 10 clients par CA
+        function loadTopClientsByRevenue() {
+            const clientRevenue = {};
+
+            invoicesData.forEach(invoice => {
+                const clientName = invoice.client_name;
+                const totalHT = parseFloat(invoice.total_ht) || 0;
+
+                if (!clientRevenue[clientName]) {
+                    clientRevenue[clientName] = {
+                        revenue: 0,
+                        invoiceCount: 0,
+                        totalMargin: 0
+                    };
+                }
+
+                clientRevenue[clientName].revenue += totalHT;
+                clientRevenue[clientName].invoiceCount += 1;
+
+                const items = typeof invoice.items === 'string' ? JSON.parse(invoice.items) : invoice.items;
+                items.forEach(item => {
+                    const product = productsData.find(p => p.id === item.product_id);
+                    if (product) {
+                        const purchasePrice = parseFloat(product.purchase_price) || 0;
+                        const sellingPrice = parseFloat(item.price) || 0;
+                        const quantity = parseInt(item.quantity) || 0;
+                        const margin = (sellingPrice - purchasePrice) * quantity;
+                        clientRevenue[clientName].totalMargin += margin;
+                    }
+                });
+            });
+
+            const sortedClients = Object.entries(clientRevenue)
+                .map(([name, data]) => ({
+                    name,
+                    revenue: data.revenue,
+                    invoiceCount: data.invoiceCount,
+                    margin: data.totalMargin
+                }))
+                .sort((a, b) => b.revenue - a.revenue)
+                .slice(0, 10);
+
+            const container = document.getElementById('topClientsByRevenue');
+            if (!container) return;
+
+            if (sortedClients.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666;">Aucune donnée disponible</p>';
+                return;
+            }
+
+            let html = `
+                <table class="product-table">
+                    <thead>
+                        <tr>
+                            <th>Client</th>
+                            <th>CA HT</th>
+                            <th>Nb Factures</th>
+                            <th>Marge Totale</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            sortedClients.forEach(client => {
+                html += `
+                    <tr>
+                        <td>${client.name}</td>
+                        <td>${client.revenue.toFixed(2)}€</td>
+                        <td>${client.invoiceCount}</td>
+                        <td>${client.margin.toFixed(2)}€</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // Export Excel du journal des ventes
+        function exportSalesJournal() {
+            if (filteredSalesJournal.length === 0) {
+                alert('Aucune donnée à exporter');
+                return;
+            }
+
+            const data = [
+                ['Date', 'N° Facture', 'Client', 'Référence', 'Produit', 'Quantité', 'Prix HT', 'Total HT', 'Marge', '% Marge']
+            ];
+
+            filteredSalesJournal.forEach(sale => {
+                const date = new Date(sale.date).toLocaleDateString('fr-FR');
+                const marginPercent = sale.priceHT > 0 ? ((sale.margin / sale.priceHT) * 100).toFixed(1) + '%' : '0%';
+
+                data.push([
+                    date,
+                    sale.invoiceNumber,
+                    sale.clientName,
+                    sale.productRef,
+                    sale.productName,
+                    sale.quantity,
+                    sale.priceHT.toFixed(2) + '€',
+                    sale.totalHT.toFixed(2) + '€',
+                    sale.margin.toFixed(2) + '€',
+                    marginPercent
+                ]);
+            });
+
+            const ws = XLSX.utils.aoa_to_sheet(data);
+
+            // Mise en forme
+            ws['!cols'] = [
+                { wch: 12 }, // Date
+                { wch: 15 }, // N° Facture
+                { wch: 30 }, // Client
+                { wch: 15 }, // Référence
+                { wch: 40 }, // Produit
+                { wch: 10 }, // Quantité
+                { wch: 12 }, // Prix HT
+                { wch: 12 }, // Total HT
+                { wch: 12 }, // Marge
+                { wch: 10 }  // % Marge
+            ];
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Journal des ventes');
+
+            const today = new Date().toISOString().split('T')[0];
+            XLSX.writeFile(wb, `journal-ventes-${today}.xlsx`);
+        }
+
+        // Modifier la fonction switchTab pour charger les données comptables
+        const originalSwitchTab = switchTab;
+        switchTab = function(tabName) {
+            originalSwitchTab(tabName);
+            if (tabName === 'comptabilite') {
+                setTimeout(() => loadAccountingData(), 100);
+            }
+        };
     </script>
 </body>
 </html>
