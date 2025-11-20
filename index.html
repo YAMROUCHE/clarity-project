@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Références Pro - Agentic Solutions</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f3f4f6;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1f2937;
+            --bg-secondary: #111827;
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --border-color: #374151;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Header */
+        header {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+        }
+
+        .btn-icon {
+            background: transparent;
+            color: var(--text-secondary);
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Landing Page */
+        .landing-page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 4rem 2rem;
+        }
+
+        .feature-card {
+            background: var(--bg-primary);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .cta-section {
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            padding: 4rem 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .cta-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.125rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        /* Auth Forms */
+        .auth-container {
+            max-width: 400px;
+            margin: 4rem auto;
+            padding: 2rem;
+        }
+
+        .auth-card {
+            background: var(--bg-primary);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .auth-card h2 {
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .auth-switch button {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* App Container */
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-tab {
+            padding: 1rem 1.5rem;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .nav-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Upload Zone */
+        .upload-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: 1rem;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            background: var(--bg-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--primary-color);
+            background: var(--bg-secondary);
+        }
+
+        .upload-zone.dragover {
+            border-color: var(--primary-color);
+            background: var(--bg-secondary);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-primary);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        /* Table */
+        .table-container {
+            background: var(--bg-primary);
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--bg-secondary);
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        tbody tr:hover {
+            background: var(--bg-secondary);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+        }
+
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+
+        /* Language Selector */
+        .lang-selector {
+            position: relative;
+        }
+
+        .lang-selector select {
+            padding: 0.5rem 2rem 0.5rem 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-actions {
+                flex-direction: column;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-tabs {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">Références Pro</div>
+        <div class="header-actions">
+            <div class="lang-selector">
+                <select id="langSelector">
+                    <option value="fr">Français</option>
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                </select>
+            </div>
+            <button class="btn btn-icon" id="themeToggle" title="Changer le thème">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+                </svg>
+            </button>
+            <button class="btn btn-secondary" id="loginBtn">Connexion</button>
+            <button class="btn btn-primary" id="signupBtn">Créer un compte</button>
+            <button class="btn btn-secondary hidden" id="logoutBtn">Déconnexion</button>
+        </div>
+    </header>
+
+    <!-- Landing Page - VISIBLE PAR DÉFAUT -->
+    <div id="landing-page" class="landing-page">
+        <section class="hero">
+            <h1 data-i18n="hero.title">Gestion professionnelle de vos références et factures</h1>
+            <p data-i18n="hero.subtitle">Importez vos produits depuis Excel, générez des références uniques et créez des factures professionnelles en quelques clics.</p>
+            <div class="hero-actions">
+                <button class="btn btn-primary" id="heroSignupBtn" data-i18n="hero.cta">Commencer gratuitement</button>
+                <button class="btn btn-secondary" id="heroLearnMoreBtn" data-i18n="hero.learn_more">En savoir plus</button>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="feature-card">
+                <h3 data-i18n="features.references.title">📝 Références uniques</h3>
+                <p data-i18n="features.references.desc">Importez vos produits depuis Excel et générez automatiquement des références uniques et personnalisées pour chaque article.</p>
+            </div>
+            <div class="feature-card">
+                <h3 data-i18n="features.invoicing.title">📄 Facturation professionnelle</h3>
+                <p data-i18n="features.invoicing.desc">Créez des factures professionnelles en quelques clics avec calcul automatique de la TVA et gestion des clients.</p>
+            </div>
+            <div class="feature-card">
+                <h3 data-i18n="features.cloud.title">☁️ Base de données cloud</h3>
+                <p data-i18n="features.cloud.desc">Vos données sont sauvegardées de manière sécurisée dans le cloud. Accédez-y depuis n'importe où, à tout moment.</p>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="feature-card">
+                <h3 data-i18n="features.free.title">✅ 100% Gratuit</h3>
+                <p data-i18n="features.free.desc">Aucun frais caché, aucun abonnement. Profitez de toutes les fonctionnalités gratuitement.</p>
+            </div>
+            <div class="feature-card">
+                <h3 data-i18n="features.secure.title">🔒 Sécurisé</h3>
+                <p data-i18n="features.secure.desc">Chiffrement 256-bit pour protéger vos données. Authentification sécurisée et conformité RGPD.</p>
+            </div>
+            <div class="feature-card">
+                <h3 data-i18n="features.easy.title">⚡ Facile à utiliser</h3>
+                <p data-i18n="features.easy.desc">Interface intuitive et moderne. Commencez en quelques minutes sans formation.</p>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <h2 data-i18n="cta.title">Prêt à commencer ?</h2>
+            <p data-i18n="cta.subtitle">Rejoignez des centaines d'entreprises qui font confiance à Références Pro</p>
+            <button class="btn btn-primary" id="ctaSignupBtn" data-i18n="cta.button">Créer un compte gratuit</button>
+        </section>
+    </div>
+
+    <!-- Auth Page - CACHÉ PAR DÉFAUT -->
+    <div id="auth-page" class="auth-container hidden">
+        <!-- Login Form -->
+        <div id="login-form" class="auth-card hidden">
+            <h2 data-i18n="auth.login.title">Connexion</h2>
+            <div class="form-group">
+                <label data-i18n="auth.email">Email</label>
+                <input type="email" id="loginEmail" required>
+            </div>
+            <div class="form-group">
+                <label data-i18n="auth.password">Mot de passe</label>
+                <input type="password" id="loginPassword" required>
+            </div>
+            <button class="btn btn-primary" style="width: 100%;" id="loginSubmit" data-i18n="auth.login.button">Se connecter</button>
+            <div class="auth-switch">
+                <span data-i18n="auth.login.no_account">Pas de compte ?</span>
+                <button id="switchToSignup" data-i18n="auth.login.signup_link">Créer un compte</button>
+            </div>
+        </div>
+
+        <!-- Signup Form -->
+        <div id="signup-form" class="auth-card hidden">
+            <h2 data-i18n="auth.signup.title">Créer un compte</h2>
+            <div class="form-group">
+                <label data-i18n="auth.email">Email</label>
+                <input type="email" id="signupEmail" required>
+            </div>
+            <div class="form-group">
+                <label data-i18n="auth.password">Mot de passe</label>
+                <input type="password" id="signupPassword" required>
+            </div>
+            <div class="form-group">
+                <label data-i18n="auth.signup.confirm_password">Confirmer le mot de passe</label>
+                <input type="password" id="signupPasswordConfirm" required>
+            </div>
+            <button class="btn btn-primary" style="width: 100%;" id="signupSubmit" data-i18n="auth.signup.button">Créer mon compte</button>
+            <div class="auth-switch">
+                <span data-i18n="auth.signup.has_account">Déjà un compte ?</span>
+                <button id="switchToLogin" data-i18n="auth.signup.login_link">Se connecter</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Page - CACHÉ PAR DÉFAUT -->
+    <div id="app-page" class="app-container hidden">
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-tab="references" data-i18n="tabs.references">Références</button>
+            <button class="nav-tab" data-tab="invoicing" data-i18n="tabs.invoicing">Facturation</button>
+        </div>
+
+        <!-- References Tab -->
+        <div id="tab-references" class="tab-content active">
+            <div class="upload-zone" id="uploadZone">
+                <svg width="48" height="48" fill="currentColor" style="margin-bottom: 1rem;">
+                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"/>
+                </svg>
+                <p data-i18n="upload.title">Glissez-déposez votre fichier Excel ici ou cliquez pour sélectionner</p>
+                <input type="file" id="fileInput" accept=".xlsx,.xls" style="display: none;">
+            </div>
+
+            <div id="statsContainer" class="stats-grid hidden">
+                <div class="stat-card">
+                    <div class="stat-label" data-i18n="stats.total">Produits totaux</div>
+                    <div class="stat-value" id="totalProducts">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label" data-i18n="stats.avg_price">Prix moyen HT</div>
+                    <div class="stat-value" id="avgPrice">0€</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label" data-i18n="stats.last_update">Dernière mise à jour</div>
+                    <div class="stat-value" id="lastUpdate">-</div>
+                </div>
+            </div>
+
+            <div id="productsTable" class="table-container hidden">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Référence</th>
+                            <th>Désignation</th>
+                            <th>Prix d'achat HT</th>
+                            <th>Prix de vente HT</th>
+                            <th>EAN</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Invoicing Tab -->
+        <div id="tab-invoicing" class="tab-content">
+            <div class="auth-card">
+                <h2 data-i18n="invoicing.title">Créer une facture</h2>
+                <div id="invoiceFormContainer">
+                    <p data-i18n="invoicing.no_products">Fonctionnalité disponible après import des produits</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 <span data-i18n="footer.app_name">Références Pro</span></p>
+        <p data-i18n="footer.powered_by">Propulsé par <a href="https://agenticsolutions.fr" target="_blank">Agentic Solutions</a></p>
+    </footer>
+
+    <script>
+        // Configuration Supabase
+        const SUPABASE_URL = 'https://zvorgatgfxdrchtgfkqm.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp2b3JnYXRnZnhkcmNodGdma3FtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjg5MTcxMDYsImV4cCI6MjA0NDQ5MzEwNn0.1Q3kZQ_bAh3qg2hSFc_gPzZczA4UjpfqFhTQT7H19iA';
+
+        // Initialisation Supabase - CORRECTION DU BUG
+        const { createClient } = window.supabase;
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Variables globales
+        let currentUser = null;
+        let products = [];
+
+        // Traductions
+        const translations = {
+            fr: {
+                "hero.title": "Gestion professionnelle de vos références et factures",
+                "hero.subtitle": "Importez vos produits depuis Excel, générez des références uniques et créez des factures professionnelles en quelques clics.",
+                "hero.cta": "Commencer gratuitement",
+                "hero.learn_more": "En savoir plus",
+                "features.references.title": "📝 Références uniques",
+                "features.references.desc": "Importez vos produits depuis Excel et générez automatiquement des références uniques et personnalisées pour chaque article.",
+                "features.invoicing.title": "📄 Facturation professionnelle",
+                "features.invoicing.desc": "Créez des factures professionnelles en quelques clics avec calcul automatique de la TVA et gestion des clients.",
+                "features.cloud.title": "☁️ Base de données cloud",
+                "features.cloud.desc": "Vos données sont sauvegardées de manière sécurisée dans le cloud. Accédez-y depuis n'importe où, à tout moment.",
+                "features.free.title": "✅ 100% Gratuit",
+                "features.free.desc": "Aucun frais caché, aucun abonnement. Profitez de toutes les fonctionnalités gratuitement.",
+                "features.secure.title": "🔒 Sécurisé",
+                "features.secure.desc": "Chiffrement 256-bit pour protéger vos données. Authentification sécurisée et conformité RGPD.",
+                "features.easy.title": "⚡ Facile à utiliser",
+                "features.easy.desc": "Interface intuitive et moderne. Commencez en quelques minutes sans formation.",
+                "cta.title": "Prêt à commencer ?",
+                "cta.subtitle": "Rejoignez des centaines d'entreprises qui font confiance à Références Pro",
+                "cta.button": "Créer un compte gratuit",
+                "auth.login.title": "Connexion",
+                "auth.signup.title": "Créer un compte",
+                "auth.email": "Email",
+                "auth.password": "Mot de passe",
+                "auth.signup.confirm_password": "Confirmer le mot de passe",
+                "auth.login.button": "Se connecter",
+                "auth.signup.button": "Créer mon compte",
+                "auth.login.no_account": "Pas de compte ?",
+                "auth.login.signup_link": "Créer un compte",
+                "auth.signup.has_account": "Déjà un compte ?",
+                "auth.signup.login_link": "Se connecter",
+                "tabs.references": "Références",
+                "tabs.invoicing": "Facturation",
+                "upload.title": "Glissez-déposez votre fichier Excel ici ou cliquez pour sélectionner",
+                "stats.total": "Produits totaux",
+                "stats.avg_price": "Prix moyen HT",
+                "stats.last_update": "Dernière mise à jour",
+                "invoicing.title": "Créer une facture",
+                "invoicing.no_products": "Fonctionnalité disponible après import des produits",
+                "footer.app_name": "Références Pro",
+                "footer.powered_by": "Propulsé par"
+            },
+            en: {
+                "hero.title": "Professional Management of Your References and Invoices",
+                "hero.subtitle": "Import your products from Excel, generate unique references and create professional invoices in just a few clicks.",
+                "hero.cta": "Start for Free",
+                "hero.learn_more": "Learn More",
+                "features.references.title": "📝 Unique References",
+                "features.references.desc": "Import your products from Excel and automatically generate unique and personalized references for each item.",
+                "features.invoicing.title": "📄 Professional Invoicing",
+                "features.invoicing.desc": "Create professional invoices in a few clicks with automatic VAT calculation and customer management.",
+                "features.cloud.title": "☁️ Cloud Database",
+                "features.cloud.desc": "Your data is securely saved in the cloud. Access it from anywhere, anytime.",
+                "features.free.title": "✅ 100% Free",
+                "features.free.desc": "No hidden fees, no subscription. Enjoy all features for free.",
+                "features.secure.title": "🔒 Secure",
+                "features.secure.desc": "256-bit encryption to protect your data. Secure authentication and GDPR compliance.",
+                "features.easy.title": "⚡ Easy to Use",
+                "features.easy.desc": "Intuitive and modern interface. Get started in minutes without training.",
+                "cta.title": "Ready to Start?",
+                "cta.subtitle": "Join hundreds of companies that trust Références Pro",
+                "cta.button": "Create Free Account",
+                "auth.login.title": "Login",
+                "auth.signup.title": "Create Account",
+                "auth.email": "Email",
+                "auth.password": "Password",
+                "auth.signup.confirm_password": "Confirm Password",
+                "auth.login.button": "Sign In",
+                "auth.signup.button": "Create Account",
+                "auth.login.no_account": "No account?",
+                "auth.login.signup_link": "Create account",
+                "auth.signup.has_account": "Already have an account?",
+                "auth.signup.login_link": "Sign in",
+                "tabs.references": "References",
+                "tabs.invoicing": "Invoicing",
+                "upload.title": "Drag and drop your Excel file here or click to select",
+                "stats.total": "Total Products",
+                "stats.avg_price": "Average Price (Ex. VAT)",
+                "stats.last_update": "Last Update",
+                "invoicing.title": "Create Invoice",
+                "invoicing.no_products": "Feature available after importing products",
+                "footer.app_name": "Références Pro",
+                "footer.powered_by": "Powered by"
+            },
+            es: {
+                "hero.title": "Gestión Profesional de tus Referencias y Facturas",
+                "hero.subtitle": "Importa tus productos desde Excel, genera referencias únicas y crea facturas profesionales en pocos clics.",
+                "hero.cta": "Comenzar Gratis",
+                "hero.learn_more": "Saber Más",
+                "features.references.title": "📝 Referencias Únicas",
+                "features.references.desc": "Importa tus productos desde Excel y genera automáticamente referencias únicas y personalizadas para cada artículo.",
+                "features.invoicing.title": "📄 Facturación Profesional",
+                "features.invoicing.desc": "Crea facturas profesionales en pocos clics con cálculo automático de IVA y gestión de clientes.",
+                "features.cloud.title": "☁️ Base de Datos en la Nube",
+                "features.cloud.desc": "Tus datos están guardados de forma segura en la nube. Accede desde cualquier lugar, en cualquier momento.",
+                "features.free.title": "✅ 100% Gratis",
+                "features.free.desc": "Sin tarifas ocultas, sin suscripción. Disfruta de todas las funciones gratis.",
+                "features.secure.title": "🔒 Seguro",
+                "features.secure.desc": "Cifrado de 256 bits para proteger tus datos. Autenticación segura y cumplimiento RGPD.",
+                "features.easy.title": "⚡ Fácil de Usar",
+                "features.easy.desc": "Interfaz intuitiva y moderna. Comienza en minutos sin formación.",
+                "cta.title": "¿Listo para Comenzar?",
+                "cta.subtitle": "Únete a cientos de empresas que confían en Références Pro",
+                "cta.button": "Crear Cuenta Gratis",
+                "auth.login.title": "Iniciar Sesión",
+                "auth.signup.title": "Crear Cuenta",
+                "auth.email": "Correo Electrónico",
+                "auth.password": "Contraseña",
+                "auth.signup.confirm_password": "Confirmar Contraseña",
+                "auth.login.button": "Entrar",
+                "auth.signup.button": "Crear Cuenta",
+                "auth.login.no_account": "¿No tienes cuenta?",
+                "auth.login.signup_link": "Crear cuenta",
+                "auth.signup.has_account": "¿Ya tienes cuenta?",
+                "auth.signup.login_link": "Iniciar sesión",
+                "tabs.references": "Referencias",
+                "tabs.invoicing": "Facturación",
+                "upload.title": "Arrastra y suelta tu archivo Excel aquí o haz clic para seleccionar",
+                "stats.total": "Productos Totales",
+                "stats.avg_price": "Precio Medio (Sin IVA)",
+                "stats.last_update": "Última Actualización",
+                "invoicing.title": "Crear Factura",
+                "invoicing.no_products": "Funcionalidad disponible después de importar productos",
+                "footer.app_name": "Références Pro",
+                "footer.powered_by": "Desarrollado por"
+            }
+        };
+
+        // Fonction de traduction
+        function translatePage(lang) {
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+            localStorage.setItem('preferredLanguage', lang);
+        }
+
+        // Thème
+        function initTheme() {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Navigation
+        function showLanding() {
+            console.log('Affichage de la landing page');
+            document.getElementById('landing-page').classList.remove('hidden');
+            document.getElementById('auth-page').classList.add('hidden');
+            document.getElementById('app-page').classList.add('hidden');
+            document.getElementById('loginBtn').classList.remove('hidden');
+            document.getElementById('signupBtn').classList.remove('hidden');
+            document.getElementById('logoutBtn').classList.add('hidden');
+        }
+
+        function showAuth(mode = 'login') {
+            console.log('Affichage du formulaire:', mode);
+            document.getElementById('landing-page').classList.add('hidden');
+            document.getElementById('auth-page').classList.remove('hidden');
+            document.getElementById('app-page').classList.add('hidden');
+            
+            if (mode === 'login') {
+                document.getElementById('login-form').classList.remove('hidden');
+                document.getElementById('signup-form').classList.add('hidden');
+            } else {
+                document.getElementById('login-form').classList.add('hidden');
+                document.getElementById('signup-form').classList.remove('hidden');
+            }
+        }
+
+        function showApp() {
+            console.log('Affichage de l\'application');
+            document.getElementById('landing-page').classList.add('hidden');
+            document.getElementById('auth-page').classList.add('hidden');
+            document.getElementById('app-page').classList.remove('hidden');
+            document.getElementById('loginBtn').classList.add('hidden');
+            document.getElementById('signupBtn').classList.add('hidden');
+            document.getElementById('logoutBtn').classList.remove('hidden');
+        }
+
+        // Authentification
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) throw error;
+
+                currentUser = data.user;
+                await loadProducts();
+                showApp();
+            } catch (error) {
+                alert('Erreur de connexion: ' + error.message);
+            }
+        }
+
+        async function handleSignup(e) {
+            e.preventDefault();
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const passwordConfirm = document.getElementById('signupPasswordConfirm').value;
+
+            if (password !== passwordConfirm) {
+                alert('Les mots de passe ne correspondent pas');
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: password
+                });
+
+                if (error) throw error;
+
+                alert('Compte créé ! Vérifiez votre email pour confirmer votre inscription.');
+                showAuth('login');
+            } catch (error) {
+                alert('Erreur lors de la création du compte: ' + error.message);
+            }
+        }
+
+        async function handleLogout() {
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) throw error;
+                
+                currentUser = null;
+                products = [];
+                showLanding();
+            } catch (error) {
+                alert('Erreur lors de la déconnexion: ' + error.message);
+            }
+        }
+
+        // Gestion des produits
+        async function loadProducts() {
+            if (!currentUser) return;
+
+            try {
+                const { data, error } = await supabase
+                    .from('products')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                products = data || [];
+                displayProducts();
+                updateInvoicingTab();
+            } catch (error) {
+                console.error('Erreur lors du chargement des produits:', error);
+            }
+        }
+
+        function displayProducts() {
+            if (products.length === 0) {
+                document.getElementById('statsContainer').classList.add('hidden');
+                document.getElementById('productsTable').classList.add('hidden');
+                return;
+            }
+
+            // Statistiques
+            document.getElementById('statsContainer').classList.remove('hidden');
+            document.getElementById('totalProducts').textContent = products.length;
+            
+            const avgPrice = products.reduce((sum, p) => sum + (parseFloat(p.purchase_price) || 0), 0) / products.length;
+            document.getElementById('avgPrice').textContent = avgPrice.toFixed(2) + '€';
+            
+            const lastUpdate = new Date().toLocaleDateString('fr-FR');
+            document.getElementById('lastUpdate').textContent = lastUpdate;
+
+            // Tableau
+            document.getElementById('productsTable').classList.remove('hidden');
+            const tbody = document.getElementById('productsTableBody');
+            tbody.innerHTML = '';
+
+            products.slice(0, 50).forEach(product => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${product.reference || '-'}</td>
+                    <td>${product.designation || '-'}</td>
+                    <td>${parseFloat(product.purchase_price || 0).toFixed(2)}€</td>
+                    <td>${parseFloat(product.selling_price || 0).toFixed(2)}€</td>
+                    <td>${product.ean || '-'}</td>
+                `;
+            });
+        }
+
+        function updateInvoicingTab() {
+            const container = document.getElementById('invoiceFormContainer');
+            
+            if (products.length === 0) {
+                container.innerHTML = '<p data-i18n="invoicing.no_products">Fonctionnalité disponible après import des produits</p>';
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="form-group">
+                    <label>Produit</label>
+                    <select id="invoiceProduct">
+                        <option value="">Sélectionner un produit</option>
+                        ${products.map(p => `<option value="${p.id}">${p.designation} - ${p.selling_price}€</option>`).join('')}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Quantité</label>
+                    <input type="number" id="invoiceQuantity" value="1" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Client</label>
+                    <input type="text" id="invoiceClient" placeholder="Nom du client">
+                </div>
+                <button class="btn btn-primary" onclick="generateInvoice()">Générer la facture</button>
+                <div id="invoicePreview" style="margin-top: 2rem;"></div>
+            `;
+        }
+
+        function generateInvoice() {
+            const productId = document.getElementById('invoiceProduct').value;
+            const quantity = parseInt(document.getElementById('invoiceQuantity').value);
+            const client = document.getElementById('invoiceClient').value;
+
+            if (!productId || !client) {
+                alert('Veuillez remplir tous les champs');
+                return;
+            }
+
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const subtotal = parseFloat(product.selling_price) * quantity;
+            const vat = subtotal * 0.20;
+            const total = subtotal + vat;
+
+            document.getElementById('invoicePreview').innerHTML = `
+                <div class="auth-card">
+                    <h3>Aperçu de la facture</h3>
+                    <p><strong>Client:</strong> ${client}</p>
+                    <p><strong>Produit:</strong> ${product.designation}</p>
+                    <p><strong>Quantité:</strong> ${quantity}</p>
+                    <p><strong>Prix unitaire HT:</strong> ${parseFloat(product.selling_price).toFixed(2)}€</p>
+                    <hr>
+                    <p><strong>Sous-total HT:</strong> ${subtotal.toFixed(2)}€</p>
+                    <p><strong>TVA (20%):</strong> ${vat.toFixed(2)}€</p>
+                    <p style="font-size: 1.5rem;"><strong>Total TTC:</strong> ${total.toFixed(2)}€</p>
+                </div>
+            `;
+        }
+
+        // Import Excel
+        async function handleFileUpload(file) {
+            if (!file) return;
+
+            try {
+                console.log('Lecture du fichier:', file.name);
+                const data = await file.arrayBuffer();
+                const workbook = XLSX.read(data, { type: 'array' });
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+                const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                console.log('Premières lignes du fichier:', jsonData.slice(0, 3));
+
+                const headers = jsonData[0];
+                console.log('En-têtes détectés:', headers);
+
+                // Détecter les colonnes - CORRECTION DU BUG DES APOSTROPHES
+                const purchasePriceCol = headers.findIndex(h => 
+                    h && (
+                        h.toLowerCase().includes('prix') && h.toLowerCase().includes('achat') ||
+                        h.toLowerCase().includes('purchase') ||
+                        h.toLowerCase().includes('cost price')
+                    )
+                );
+                
+                const sellingPriceCol = headers.findIndex(h => 
+                    h && (
+                        h.toLowerCase().includes('prix') && h.toLowerCase().includes('vente') ||
+                        h.toLowerCase().includes('selling') ||
+                        h.toLowerCase().includes('sale price')
+                    )
+                );
+
+                const designationCol = headers.findIndex(h => 
+                    h && (h.toLowerCase().includes('désignation') || h.toLowerCase().includes('designation'))
+                );
+
+                const eanCol = headers.findIndex(h => 
+                    h && h.toLowerCase().includes('ean')
+                );
+
+                console.log('Colonnes détectées:', {
+                    purchasePrice: purchasePriceCol,
+                    sellingPrice: sellingPriceCol,
+                    designation: designationCol,
+                    ean: eanCol
+                });
+
+                // Conversion des données
+                const productsToImport = [];
+                for (let i = 1; i < jsonData.length; i++) {
+                    const row = jsonData[i];
+                    if (!row || row.length === 0) continue;
+
+                    const purchasePrice = parseFloat(String(row[purchasePriceCol] || '0').replace(',', '.'));
+                    const sellingPrice = parseFloat(String(row[sellingPriceCol] || '0').replace(',', '.'));
+
+                    const product = {
+                        user_id: currentUser.id,
+                        designation: row[designationCol] || '',
+                        ean: row[eanCol] || '',
+                        purchase_price: purchasePrice,
+                        selling_price: sellingPrice,
+                        reference: `REF-${Date.now()}-${i}`
+                    };
+
+                    productsToImport.push(product);
+                }
+
+                console.log('Premiers produits à importer:', productsToImport.slice(0, 3));
+
+                // Supprimer les anciens produits
+                const { error: deleteError } = await supabase
+                    .from('products')
+                    .delete()
+                    .eq('user_id', currentUser.id);
+
+                if (deleteError) throw deleteError;
+
+                // Insérer les nouveaux produits
+                const { data: insertedData, error: insertError } = await supabase
+                    .from('products')
+                    .insert(productsToImport);
+
+                if (insertError) throw insertError;
+
+                alert(`${productsToImport.length} produits importés avec succès !`);
+                await loadProducts();
+
+            } catch (error) {
+                console.error('Erreur lors de l\'import:', error);
+                alert('Erreur lors de l\'import: ' + error.message);
+            }
+        }
+
+        // Initialisation après le chargement du DOM
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('DOM chargé - Initialisation');
+            
+            // Initialiser le thème et la langue
+            initTheme();
+            const savedLang = localStorage.getItem('preferredLanguage') || 'fr';
+            document.getElementById('langSelector').value = savedLang;
+            translatePage(savedLang);
+
+            // Vérifier la session APRÈS que tout soit chargé
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                
+                if (session) {
+                    console.log('Session détectée, affichage de l\'app');
+                    currentUser = session.user;
+                    await loadProducts();
+                    showApp();
+                } else {
+                    console.log('Pas de session, affichage de la landing page');
+                    showLanding();
+                }
+            } catch (error) {
+                console.error('Erreur lors de la vérification de la session:', error);
+                showLanding();
+            }
+
+            // Event Listeners pour la navigation
+            document.getElementById('loginBtn').addEventListener('click', () => showAuth('login'));
+            document.getElementById('signupBtn').addEventListener('click', () => showAuth('signup'));
+            document.getElementById('heroSignupBtn').addEventListener('click', () => showAuth('signup'));
+            document.getElementById('ctaSignupBtn').addEventListener('click', () => showAuth('signup'));
+            document.getElementById('switchToSignup').addEventListener('click', () => showAuth('signup'));
+            document.getElementById('switchToLogin').addEventListener('click', () => showAuth('login'));
+            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+
+            // Event Listeners pour l'authentification
+            document.getElementById('loginSubmit').addEventListener('click', handleLogin);
+            document.getElementById('signupSubmit').addEventListener('click', handleSignup);
+
+            // Event Listener pour le changement de thème
+            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
+            // Event Listener pour la langue
+            document.getElementById('langSelector').addEventListener('change', (e) => {
+                translatePage(e.target.value);
+            });
+
+            // Tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+                    
+                    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    this.classList.add('active');
+                    document.getElementById('tab-' + targetTab).classList.add('active');
+                });
+            });
+
+            // Upload - CORRECTION DU BUG
+            const uploadZone = document.getElementById('uploadZone');
+            const fileInput = document.getElementById('fileInput');
+
+            uploadZone.addEventListener('click', () => {
+                console.log('Clic sur la zone d\'upload');
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                console.log('Fichier sélectionné:', e.target.files[0]);
+                if (e.target.files[0]) {
+                    handleFileUpload(e.target.files[0]);
+                }
+            });
+
+            uploadZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadZone.classList.add('dragover');
+            });
+
+            uploadZone.addEventListener('dragleave', () => {
+                uploadZone.classList.remove('dragover');
+            });
+
+            uploadZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadZone.classList.remove('dragover');
+                console.log('Fichier déposé:', e.dataTransfer.files[0]);
+                if (e.dataTransfer.files[0]) {
+                    handleFileUpload(e.dataTransfer.files[0]);
+                }
+            });
+
+            console.log('Initialisation terminée');
+        });
+    </script>
+</body>
+</html>
