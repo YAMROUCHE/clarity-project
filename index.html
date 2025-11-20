@@ -7,7 +7,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Clarity - Gestion professionnelle</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         * {
@@ -1692,11 +1691,47 @@
     </div>
 
     <script>
-        const SUPABASE_URL = 'https://zvorgatgfxdrchtgfkqm.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp2b3JnYXRnZnhkcmNodGdma3FtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA1MzExNzUsImV4cCI6MjA3NjEwNzE3NX0.oSg2Qaa1u22PxkcIz_8n9wVIN_aIFQMDCVijBSAP00Y';
-        
-        const { createClient } = window.supabase;
-        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+        // Configuration API Cloudflare
+        const API_URL = 'https://clarity.youssef-amrouche.workers.dev';
+
+        // Gestion du token d'authentification
+        function getAuthToken() {
+            return localStorage.getItem('auth_token');
+        }
+
+        function setAuthToken(token) {
+            localStorage.setItem('auth_token', token);
+        }
+
+        function clearAuthToken() {
+            localStorage.removeItem('auth_token');
+        }
+
+        // Helper pour les requêtes API authentifiées
+        async function apiRequest(endpoint, options = {}) {
+            const token = getAuthToken();
+            const headers = {
+                'Content-Type': 'application/json',
+                ...options.headers
+            };
+
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+
+            const response = await fetch(`${API_URL}${endpoint}`, {
+                ...options,
+                headers
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Erreur API');
+            }
+
+            return data;
+        }
 
         let currentUser = null;
         let productsData = [];
@@ -1712,16 +1747,22 @@
         let clientToDelete = null;
 
         document.addEventListener('DOMContentLoaded', async function() {
-            const { data: { user } } = await supabase.auth.getUser();
-            
-            if (user) {
-                currentUser = user;
-                showApp();
-                await loadProducts();
-                await loadInvoices();
-                await loadClients();
-                loadSettings();
-            } else {
+            // Vérifier la session au chargement
+            try {
+                const { session } = await apiRequest('/api/auth/session');
+
+                if (session && session.user) {
+                    currentUser = session.user;
+                    showApp();
+                    await loadProducts();
+                    await loadInvoices();
+                    await loadClients();
+                    loadSettings();
+                } else {
+                    showLanding();
+                }
+            } catch (error) {
+                console.log('Pas de session active');
                 showLanding();
             }
 
@@ -1769,21 +1810,22 @@
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
 
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email,
-                password
-            });
+            try {
+                const data = await apiRequest('/api/auth/login', {
+                    method: 'POST',
+                    body: JSON.stringify({ email, password })
+                });
 
-            if (error) {
-                alert('Erreur de connexion: ' + error.message);
-            } else {
                 currentUser = data.user;
+                setAuthToken(data.token);
                 closeLoginModal();
                 showApp();
                 await loadProducts();
                 await loadInvoices();
                 await loadClients();
                 loadSettings();
+            } catch (error) {
+                alert('Erreur de connexion: ' + error.message);
             }
         }
 
@@ -1792,21 +1834,22 @@
             const email = document.getElementById('signupEmail').value;
             const password = document.getElementById('signupPassword').value;
 
-            const { data, error } = await supabase.auth.signUp({
-                email,
-                password
-            });
+            try {
+                await apiRequest('/api/auth/signup', {
+                    method: 'POST',
+                    body: JSON.stringify({ email, password })
+                });
 
-            if (error) {
-                alert('Erreur d\'inscription: ' + error.message);
-            } else {
-                alert('Compte créé ! Vérifiez votre email pour confirmer votre inscription.');
+                alert('Compte créé avec succès ! Vous pouvez maintenant vous connecter.');
                 closeSignupModal();
+                showLoginModal();
+            } catch (error) {
+                alert('Erreur d\'inscription: ' + error.message);
             }
         }
 
-        async function logout() {
-            await supabase.auth.signOut();
+        function logout() {
+            clearAuthToken();
             currentUser = null;
             productsData = [];
             invoicesData = [];
@@ -1916,13 +1959,14 @@
             let successCount = 0;
             let errorCount = 0;
             let sequentialNumber = 1;
-            
+            const productsToImport = [];
+
             for (const row of data) {
                 const designation = row[designationCol];
                 const ean = row[eanCol];
                 const purchasePrice = parseFloat(String(row[purchasePriceCol] || 0).replace(',', '.').replace(/[^\d.]/g, '')) || 0;
                 const sellingPrice = parseFloat(String(row[sellingPriceCol] || 0).replace(',', '.').replace(/[^\d.]/g, '')) || 0;
-                
+
                 let artGrp = artGrpCol ? String(row[artGrpCol] || '00').trim() : '00';
                 if (artGrp === 'NaN' || artGrp === 'undefined' || artGrp === '') {
                     artGrp = '00';
@@ -1934,24 +1978,32 @@
                     const descPrefix = firstWord.substring(0, 3).toUpperCase();
                     const seqNumber = String(sequentialNumber).padStart(4, '0');
                     const reference = `${artGrp}-${descPrefix}-${seqNumber}`;
-                    
-                    const { error } = await supabase
-                        .from('products')
-                        .insert({
-                            user_id: currentUser.id,
-                            reference: reference,
-                            designation: designation,
-                            ean: ean,
-                            purchase_price: purchasePrice,
-                            selling_price: sellingPrice
-                        });
 
-                    if (error) {
-                        errorCount++;
-                    } else {
-                        successCount++;
-                        sequentialNumber++;
-                    }
+                    productsToImport.push({
+                        reference: reference,
+                        designation: designation,
+                        ean: ean,
+                        purchase_price: purchasePrice,
+                        selling_price: sellingPrice,
+                        art_group: artGrp
+                    });
+
+                    sequentialNumber++;
+                    successCount++;
+                }
+            }
+
+            // Envoyer tous les produits en une seule requête
+            if (productsToImport.length > 0) {
+                try {
+                    await apiRequest('/api/products', {
+                        method: 'POST',
+                        body: JSON.stringify({ products: productsToImport })
+                    });
+                } catch (error) {
+                    alert('Erreur lors de l\'import des produits: ' + error.message);
+                    errorCount = productsToImport.length;
+                    successCount = 0;
                 }
             }
 
@@ -1978,29 +2030,25 @@
         }
 
         async function loadProducts() {
-            const { data, error } = await supabase
-                .from('products')
-                .select('*')
-                .eq('user_id', currentUser.id);
+            try {
+                const { data } = await apiRequest('/api/products');
 
-            if (error) {
+                productsData = data;
+                filteredProducts = data;
+
+                if (productsData.length > 0) {
+                    document.getElementById('searchContainer').style.display = 'flex';
+                    setupSearchListeners();
+                } else {
+                    document.getElementById('searchContainer').style.display = 'none';
+                }
+
+                displayProducts();
+                updateStats();
+                updateDashboard();
+            } catch (error) {
                 alert('Erreur lors du chargement des produits: ' + error.message);
-                return;
             }
-
-            productsData = data;
-            filteredProducts = data;
-            
-            if (productsData.length > 0) {
-                document.getElementById('searchContainer').style.display = 'flex';
-                setupSearchListeners();
-            } else {
-                document.getElementById('searchContainer').style.display = 'none';
-            }
-            
-            displayProducts();
-            updateStats();
-            updateDashboard();
         }
 
         function setupSearchListeners() {
@@ -2206,23 +2254,24 @@
                 return;
             }
 
-            const { error } = await supabase
-                .from('products')
-                .update({
-                    designation: designation,
-                    ean: ean,
-                    purchase_price: purchasePrice,
-                    selling_price: sellingPrice
-                })
-                .eq('id', productId);
+            try {
+                await apiRequest(`/api/products/${productId}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        designation: designation,
+                        ean: ean,
+                        purchase_price: purchasePrice,
+                        selling_price: sellingPrice,
+                        art_group: ''
+                    })
+                });
 
-            if (error) {
+                console.log('Product updated successfully');
+            } catch (error) {
                 console.error('Update error:', error);
                 alert('Erreur lors de la mise à jour: ' + error.message);
                 return;
             }
-
-            console.log('Product updated successfully');
 
             closeEditModal();
 
@@ -2279,18 +2328,17 @@
             console.log('=== DELETING PRODUCT ===');
             console.log('Product ID to delete:', productToDelete);
 
-            const { error } = await supabase
-                .from('products')
-                .delete()
-                .eq('id', productToDelete);
+            try {
+                await apiRequest(`/api/products/${productToDelete}`, {
+                    method: 'DELETE'
+                });
 
-            if (error) {
+                console.log('Product deleted successfully');
+            } catch (error) {
                 console.error('Delete error:', error);
                 alert('Erreur lors de la suppression: ' + error.message);
                 return;
             }
-
-            console.log('Product deleted successfully');
 
             closeDeleteModal();
 
@@ -2534,22 +2582,24 @@
                 return;
             }
 
-            const { error } = await supabase
-                .from('invoices')
-                .insert({
-                    user_id: currentUser.id,
-                    invoice_number: currentInvoiceData.invoice_number,
-                    invoice_date: currentInvoiceData.invoice_date,
-                    client_name: currentInvoiceData.client_name,
-                    client_address: currentInvoiceData.client_address,
-                    items: currentInvoiceData.items,
-                    total_ht: currentInvoiceData.total_ht,
-                    total_tva: currentInvoiceData.total_tva,
-                    total_ttc: currentInvoiceData.total_ttc,
-                    tax_rate: currentInvoiceData.tax_rate
+            try {
+                await apiRequest('/api/invoices', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        invoice: {
+                            invoice_number: currentInvoiceData.invoice_number,
+                            invoice_date: currentInvoiceData.invoice_date,
+                            client_name: currentInvoiceData.client_name,
+                            client_address: currentInvoiceData.client_address,
+                            items: currentInvoiceData.items,
+                            total_ht: currentInvoiceData.total_ht,
+                            vat: currentInvoiceData.total_tva,
+                            total_ttc: currentInvoiceData.total_ttc,
+                            tax_rate: currentInvoiceData.tax_rate
+                        }
+                    })
                 });
-
-            if (error) {
+            } catch (error) {
                 console.error('Error saving invoice:', error);
                 alert('Erreur lors de la sauvegarde de la facture: ' + error.message);
                 return;
@@ -2586,28 +2636,23 @@
         }
 
         async function loadInvoices() {
-            const { data, error } = await supabase
-                .from('invoices')
-                .select('*')
-                .eq('user_id', currentUser.id)
-                .order('created_at', { ascending: false });
+            try {
+                const { data } = await apiRequest('/api/invoices');
 
-            if (error) {
+                invoicesData = data;
+                filteredInvoices = data;
+
+                if (invoicesData.length > 0) {
+                    document.getElementById('searchInvoicesContainer').style.display = 'flex';
+                    setupInvoicesSearchListeners();
+                } else {
+                    document.getElementById('searchInvoicesContainer').style.display = 'none';
+                }
+
+                displayInvoices();
+            } catch (error) {
                 console.error('Error loading invoices:', error);
-                return;
             }
-
-            invoicesData = data;
-            filteredInvoices = data;
-
-            if (invoicesData.length > 0) {
-                document.getElementById('searchInvoicesContainer').style.display = 'flex';
-                setupInvoicesSearchListeners();
-            } else {
-                document.getElementById('searchInvoicesContainer').style.display = 'none';
-            }
-
-            displayInvoices();
         }
 
         function setupInvoicesSearchListeners() {
@@ -2835,28 +2880,23 @@
         }
 
         async function loadClients() {
-            const { data, error } = await supabase
-                .from('clients')
-                .select('*')
-                .eq('user_id', currentUser.id)
-                .order('name');
+            try {
+                const { data } = await apiRequest('/api/clients');
 
-            if (error) {
+                clientsData = data;
+                filteredClients = data;
+
+                if (clientsData.length > 0) {
+                    document.getElementById('searchClientsContainer').style.display = 'flex';
+                    setupClientsSearchListeners();
+                } else {
+                    document.getElementById('searchClientsContainer').style.display = 'none';
+                }
+
+                displayClients();
+            } catch (error) {
                 console.error('Error loading clients:', error);
-                return;
             }
-
-            clientsData = data;
-            filteredClients = data;
-
-            if (clientsData.length > 0) {
-                document.getElementById('searchClientsContainer').style.display = 'flex';
-                setupClientsSearchListeners();
-            } else {
-                document.getElementById('searchClientsContainer').style.display = 'none';
-            }
-
-            displayClients();
         }
 
         function setupClientsSearchListeners() {
@@ -3036,37 +3076,27 @@
                 return;
             }
 
-            let error;
-
-            if (clientId) {
-                const result = await supabase
-                    .from('clients')
-                    .update({
-                        name: name,
-                        address: address,
-                        email: email,
-                        phone: phone,
-                        siret: siret
-                    })
-                    .eq('id', clientId);
-                
-                error = result.error;
-            } else {
-                const result = await supabase
-                    .from('clients')
-                    .insert({
-                        user_id: currentUser.id,
-                        name: name,
-                        address: address,
-                        email: email,
-                        phone: phone,
-                        siret: siret
+            try {
+                if (clientId) {
+                    await apiRequest(`/api/clients/${clientId}`, {
+                        method: 'PUT',
+                        body: JSON.stringify({
+                            name: name,
+                            address: address,
+                            siret: siret || ''
+                        })
                     });
-                
-                error = result.error;
-            }
-
-            if (error) {
+                } else {
+                    await apiRequest('/api/clients', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            name: name,
+                            address: address,
+                            siret: siret || ''
+                        })
+                    });
+                }
+            } catch (error) {
                 console.error('Error saving client:', error);
                 alert('Erreur lors de la sauvegarde: ' + error.message);
                 return;
@@ -3105,12 +3135,11 @@
                 return;
             }
 
-            const { error } = await supabase
-                .from('clients')
-                .delete()
-                .eq('id', clientToDelete);
-
-            if (error) {
+            try {
+                await apiRequest(`/api/clients/${clientToDelete}`, {
+                    method: 'DELETE'
+                });
+            } catch (error) {
                 console.error('Delete error:', error);
                 alert('Erreur lors de la suppression: ' + error.message);
                 return;

@@ -84,6 +84,17 @@ export default {
         return handleDeleteProducts(request, env);
       }
 
+      // Routes produits individuels
+      if (path.startsWith('/api/products/') && method === 'PUT') {
+        const productId = path.split('/').pop();
+        return handleUpdateProduct(request, env, productId);
+      }
+
+      if (path.startsWith('/api/products/') && method === 'DELETE') {
+        const productId = path.split('/').pop();
+        return handleDeleteProduct(request, env, productId);
+      }
+
       // Routes factures
       if (path === '/api/invoices' && method === 'GET') {
         return handleGetInvoices(request, env);
@@ -96,6 +107,21 @@ export default {
       // Routes clients
       if (path === '/api/clients' && method === 'GET') {
         return handleGetClients(request, env);
+      }
+
+      if (path === '/api/clients' && method === 'POST') {
+        return handleCreateClient(request, env);
+      }
+
+      // Routes clients individuels
+      if (path.startsWith('/api/clients/') && method === 'PUT') {
+        const clientId = path.split('/').pop();
+        return handleUpdateClient(request, env, clientId);
+      }
+
+      if (path.startsWith('/api/clients/') && method === 'DELETE') {
+        const clientId = path.split('/').pop();
+        return handleDeleteClient(request, env, clientId);
       }
 
       return jsonResponse({ error: 'Route not found' }, 404);
@@ -255,6 +281,36 @@ async function handleDeleteProducts(request, env) {
   return jsonResponse({ message: 'Produits supprimés avec succès' });
 }
 
+async function handleUpdateProduct(request, env, productId) {
+  const userId = await getUserIdFromRequest(request, env);
+  if (!userId) {
+    return jsonResponse({ error: 'Non authentifié' }, 401);
+  }
+
+  const { designation, ean, purchase_price, selling_price, art_group } = await request.json();
+
+  await env.DB.prepare(
+    `UPDATE products
+     SET designation = ?, ean = ?, purchase_price = ?, selling_price = ?, art_group = ?
+     WHERE id = ? AND user_id = ?`
+  ).bind(designation, ean, purchase_price, selling_price, art_group, productId, userId).run();
+
+  return jsonResponse({ message: 'Produit mis à jour avec succès' });
+}
+
+async function handleDeleteProduct(request, env, productId) {
+  const userId = await getUserIdFromRequest(request, env);
+  if (!userId) {
+    return jsonResponse({ error: 'Non authentifié' }, 401);
+  }
+
+  await env.DB.prepare(
+    'DELETE FROM products WHERE id = ? AND user_id = ?'
+  ).bind(productId, userId).run();
+
+  return jsonResponse({ message: 'Produit supprimé avec succès' });
+}
+
 // ============================================
 // HANDLERS - FACTURES
 // ============================================
@@ -313,6 +369,53 @@ async function handleGetClients(request, env) {
   ).bind(userId).all();
 
   return jsonResponse({ data: clients.results || [] });
+}
+
+async function handleCreateClient(request, env) {
+  const userId = await getUserIdFromRequest(request, env);
+  if (!userId) {
+    return jsonResponse({ error: 'Non authentifié' }, 401);
+  }
+
+  const { name, address, siret } = await request.json();
+  const clientId = nanoid();
+
+  await env.DB.prepare(
+    `INSERT INTO clients (id, user_id, name, address, siret)
+     VALUES (?, ?, ?, ?, ?)`
+  ).bind(clientId, userId, name, address, siret || '').run();
+
+  return jsonResponse({ message: 'Client créé avec succès', id: clientId });
+}
+
+async function handleUpdateClient(request, env, clientId) {
+  const userId = await getUserIdFromRequest(request, env);
+  if (!userId) {
+    return jsonResponse({ error: 'Non authentifié' }, 401);
+  }
+
+  const { name, address, siret } = await request.json();
+
+  await env.DB.prepare(
+    `UPDATE clients
+     SET name = ?, address = ?, siret = ?
+     WHERE id = ? AND user_id = ?`
+  ).bind(name, address, siret || '', clientId, userId).run();
+
+  return jsonResponse({ message: 'Client mis à jour avec succès' });
+}
+
+async function handleDeleteClient(request, env, clientId) {
+  const userId = await getUserIdFromRequest(request, env);
+  if (!userId) {
+    return jsonResponse({ error: 'Non authentifié' }, 401);
+  }
+
+  await env.DB.prepare(
+    'DELETE FROM clients WHERE id = ? AND user_id = ?'
+  ).bind(clientId, userId).run();
+
+  return jsonResponse({ message: 'Client supprimé avec succès' });
 }
 
 // ============================================
