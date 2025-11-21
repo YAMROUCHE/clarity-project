@@ -390,12 +390,13 @@ async function handleCreateInvoice(request, env) {
   const invoiceId = nanoid();
 
   await env.DB.prepare(
-    `INSERT INTO invoices (id, user_id, invoice_number, client_name, total_ht, vat, total_ttc, items)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+    `INSERT INTO invoices (id, user_id, invoice_number, invoice_date, client_name, total_ht, vat, total_ttc, items)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).bind(
     invoiceId,
     userId,
     invoice.invoice_number,
+    invoice.invoice_date || new Date().toISOString(),
     invoice.client_name,
     invoice.total_ht,
     invoice.vat,
