@@ -1,7 +1,15 @@
 [build]
   publish = "."
-  
+  command = "echo 'No build needed'"
+
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
+  from = "/api/*"
+  to = "https://clarity.youssef-amrouche.workers.dev/api/:splat"
   status = 200
+  force = true
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"

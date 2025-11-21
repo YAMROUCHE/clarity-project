@@ -1094,6 +1094,15 @@
                 background: #e0e0e0;
             }
         }
+
+        /* Modules comptables - Navigation */
+        .compta-module {
+            display: none;
+        }
+
+        .compta-module.active {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -1418,73 +1427,259 @@
 
             <!-- COMPTABILITÉ -->
             <div class="tab-content" id="tab-comptabilite">
-                <h2>Comptabilité</h2>
+                <h2>Comptabilité Professionnelle</h2>
 
-                <!-- KPIs Dashboard -->
-                <div class="stats-container" style="margin-bottom: 30px;">
-                    <div class="stat-card">
-                        <div class="stat-value" id="caMonthly">0.00€</div>
-                        <div class="stat-label">CA Mensuel HT</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="caAnnual">0.00€</div>
-                        <div class="stat-label">CA Annuel HT</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="marginTotal">0.00€</div>
-                        <div class="stat-label">Marge Brute</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="invoiceCount">0</div>
-                        <div class="stat-label">Nombre de Factures</div>
-                    </div>
+                <!-- Navigation des sous-modules -->
+                <div class="tabs" style="margin-bottom: 20px; border-bottom: 2px solid #000;">
+                    <button class="tab active" onclick="switchComptaModule('dashboard')" style="font-size: 14px; padding: 10px 15px;">Dashboard</button>
+                    <button class="tab" onclick="switchComptaModule('tva')" style="font-size: 14px; padding: 10px 15px;">TVA</button>
+                    <button class="tab" onclick="switchComptaModule('charges')" style="font-size: 14px; padding: 10px 15px;">Charges</button>
+                    <button class="tab" onclick="switchComptaModule('plan-comptable')" style="font-size: 14px; padding: 10px 15px;">Plan Comptable</button>
+                    <button class="tab" onclick="switchComptaModule('livre-journal')" style="font-size: 14px; padding: 10px 15px;">Livre Journal</button>
+                    <button class="tab" onclick="switchComptaModule('balance')" style="font-size: 14px; padding: 10px 15px;">Balance</button>
+                    <button class="tab" onclick="switchComptaModule('resultat')" style="font-size: 14px; padding: 10px 15px;">Résultat</button>
+                    <button class="tab" onclick="switchComptaModule('tresorerie')" style="font-size: 14px; padding: 10px 15px;">Trésorerie</button>
                 </div>
 
-                <!-- Graphiques -->
-                <div class="card" style="margin-bottom: 30px;">
-                    <h3>Évolution du Chiffre d'Affaires</h3>
-                    <canvas id="revenueChart" style="max-height: 300px;"></canvas>
-                </div>
-
-                <div class="card" style="margin-bottom: 30px;">
-                    <h3>Évolution de la Marge</h3>
-                    <canvas id="marginChart" style="max-height: 300px;"></canvas>
-                </div>
-
-                <!-- Journal des ventes -->
-                <div class="card" style="margin-bottom: 30px;">
-                    <h3>Journal des Ventes</h3>
-
-                    <div style="display: flex; gap: 15px; margin-bottom: 20px; align-items: center;">
-                        <select id="periodFilter" onchange="filterSalesJournal()" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
-                            <option value="all">Toutes les périodes</option>
-                            <option value="today">Aujourd'hui</option>
-                            <option value="month">Ce mois-ci</option>
-                            <option value="year">Cette année</option>
-                        </select>
-
-                        <input type="text" id="searchSalesJournal" placeholder="Rechercher..." style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
-
-                        <button class="btn" onclick="exportSalesJournal()">📊 Export Excel</button>
+                <!-- MODULE: Dashboard -->
+                <div class="compta-module active" id="compta-dashboard">
+                    <div class="stats-container" style="margin-bottom: 30px;">
+                        <div class="stat-card">
+                            <div class="stat-value" id="caMonthly">0.00€</div>
+                            <div class="stat-label">CA Mensuel HT</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="caAnnual">0.00€</div>
+                            <div class="stat-label">CA Annuel HT</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="marginTotal">0.00€</div>
+                            <div class="stat-label">Marge Brute</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="invoiceCount">0</div>
+                            <div class="stat-label">Factures</div>
+                        </div>
                     </div>
 
-                    <div id="salesJournalTable"></div>
+                    <div class="card" style="margin-bottom: 30px;">
+                        <h3>Évolution du CA</h3>
+                        <canvas id="revenueChart" style="max-height: 300px;"></canvas>
+                    </div>
+
+                    <div class="card" style="margin-bottom: 30px;">
+                        <h3>Évolution de la Marge</h3>
+                        <canvas id="marginChart" style="max-height: 300px;"></canvas>
+                    </div>
+
+                    <div class="card">
+                        <h3>Top 10 Produits par Marge</h3>
+                        <div id="topProductsByMargin"></div>
+                    </div>
                 </div>
 
-                <!-- Analyses de rentabilité -->
-                <div class="card" style="margin-bottom: 30px;">
-                    <h3>Top 10 Produits par Marge</h3>
-                    <div id="topProductsByMargin"></div>
+                <!-- MODULE: Gestion TVA -->
+                <div class="compta-module" id="compta-tva">
+                    <div class="card" style="margin-bottom: 20px;">
+                        <h3>Synthèse TVA</h3>
+                        <div style="display: flex; gap: 15px; margin-bottom: 20px; align-items: center;">
+                            <label>Période :</label>
+                            <input type="date" id="tvaPeriodStart" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            <span>au</span>
+                            <input type="date" id="tvaPeriodEnd" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            <button class="btn" onclick="calculateTVASynthese()">Calculer</button>
+                        </div>
+
+                        <div class="stats-container" id="tvaSynthese" style="margin-top: 20px;">
+                            <div class="stat-card">
+                                <div class="stat-value" id="tvaCollectee">0.00€</div>
+                                <div class="stat-label">TVA Collectée</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="tvaDeductible">0.00€</div>
+                                <div class="stat-label">TVA Déductible</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="tvaAPayer">0.00€</div>
+                                <div class="stat-label">TVA à Payer</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3>Déclarations TVA (CA3)</h3>
+                            <button class="btn btn-primary" onclick="showCreateDeclarationTVA()">+ Nouvelle Déclaration</button>
+                        </div>
+                        <div id="declarationsTVATable"></div>
+                    </div>
                 </div>
 
-                <div class="card" style="margin-bottom: 30px;">
-                    <h3>Marge par Art Group</h3>
-                    <div id="marginByArtGroup"></div>
+                <!-- MODULE: Gestion des Charges -->
+                <div class="compta-module" id="compta-charges">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3>Gestion des Charges</h3>
+                            <button class="btn btn-primary" onclick="showAddChargeModal()">+ Nouvelle Charge</button>
+                        </div>
+
+                        <div style="display: flex; gap: 15px; margin-bottom: 20px; align-items: center;">
+                            <select id="chargesFilter" onchange="filterCharges()" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                                <option value="all">Toutes les catégories</option>
+                                <option value="loyer">Loyer</option>
+                                <option value="salaires">Salaires</option>
+                                <option value="fournitures">Fournitures</option>
+                                <option value="energie">Énergie</option>
+                                <option value="assurance">Assurance</option>
+                                <option value="transport">Transport</option>
+                                <option value="marketing">Marketing</option>
+                                <option value="autre">Autre</option>
+                            </select>
+                            <input type="text" id="searchCharges" placeholder="Rechercher..." style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 4px;" oninput="filterCharges()">
+                        </div>
+
+                        <div id="chargesTable"></div>
+                    </div>
                 </div>
 
-                <div class="card" style="margin-bottom: 30px;">
-                    <h3>Top 10 Clients par CA</h3>
-                    <div id="topClientsByRevenue"></div>
+                <!-- MODULE: Plan Comptable -->
+                <div class="compta-module" id="compta-plan-comptable">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3>Plan Comptable Simplifié PME</h3>
+                            <button class="btn btn-primary" onclick="initPlanComptable()">Initialiser le Plan Comptable</button>
+                        </div>
+
+                        <div style="display: flex; gap: 15px; margin-bottom: 20px; align-items: center;">
+                            <select id="classeFilter" onchange="filterComptes()" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                                <option value="all">Toutes les classes</option>
+                                <option value="4">Classe 4 - Comptes de tiers</option>
+                                <option value="6">Classe 6 - Charges</option>
+                                <option value="7">Classe 7 - Produits</option>
+                            </select>
+                        </div>
+
+                        <div id="planComptableTable"></div>
+                    </div>
+                </div>
+
+                <!-- MODULE: Livre Journal -->
+                <div class="compta-module" id="compta-livre-journal">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3>Livre Journal</h3>
+                            <button class="btn" onclick="exportFEC()">📥 Export FEC</button>
+                        </div>
+
+                        <div style="display: flex; gap: 15px; margin-bottom: 20px; align-items: center;">
+                            <label>Période :</label>
+                            <input type="date" id="journalDateStart" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            <span>au</span>
+                            <input type="date" id="journalDateEnd" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            <button class="btn" onclick="filterJournal()">Filtrer</button>
+                        </div>
+
+                        <div id="livreJournalTable"></div>
+                    </div>
+                </div>
+
+                <!-- MODULE: Balance Comptable -->
+                <div class="compta-module" id="compta-balance">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3>Balance Comptable</h3>
+                            <button class="btn" onclick="exportBalance()">📥 Export Excel</button>
+                        </div>
+
+                        <div style="display: flex; gap: 15px; margin-bottom: 20px; align-items: center;">
+                            <label>Au :</label>
+                            <input type="date" id="balanceDate" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            <button class="btn" onclick="calculateBalance()">Calculer</button>
+                        </div>
+
+                        <div style="margin-bottom: 20px; padding: 15px; background: #f5f5f5; border-radius: 4px;">
+                            <strong>Total Débit :</strong> <span id="balanceTotalDebit">0.00€</span> |
+                            <strong>Total Crédit :</strong> <span id="balanceTotalCredit">0.00€</span> |
+                            <strong>Équilibre :</strong> <span id="balanceEquilibre">✓ Équilibrée</span>
+                        </div>
+
+                        <div id="balanceTable"></div>
+                    </div>
+                </div>
+
+                <!-- MODULE: Compte de Résultat -->
+                <div class="compta-module" id="compta-resultat">
+                    <div class="card">
+                        <h3>Compte de Résultat</h3>
+
+                        <div style="display: flex; gap: 15px; margin-bottom: 20px; align-items: center;">
+                            <label>Exercice :</label>
+                            <input type="date" id="resultatDateStart" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            <span>au</span>
+                            <input type="date" id="resultatDateEnd" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            <button class="btn" onclick="calculateResultat()">Calculer</button>
+                            <button class="btn" onclick="exportResultat()">📥 Export Excel</button>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                            <div style="background: #f5f5f5; padding: 20px; border-radius: 4px;">
+                                <h4 style="margin-bottom: 15px; border-bottom: 2px solid #000; padding-bottom: 10px;">PRODUITS</h4>
+                                <div id="produitsDetail"></div>
+                                <div style="margin-top: 15px; padding-top: 15px; border-top: 2px solid #000; font-weight: bold;">
+                                    Total Produits : <span id="totalProduits">0.00€</span>
+                                </div>
+                            </div>
+
+                            <div style="background: #f5f5f5; padding: 20px; border-radius: 4px;">
+                                <h4 style="margin-bottom: 15px; border-bottom: 2px solid #000; padding-bottom: 10px;">CHARGES</h4>
+                                <div id="chargesDetail"></div>
+                                <div style="margin-top: 15px; padding-top: 15px; border-top: 2px solid #000; font-weight: bold;">
+                                    Total Charges : <span id="totalCharges">0.00€</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="text-align: center; padding: 30px; background: #000; color: #fff; border-radius: 4px; font-size: 24px; font-weight: bold;">
+                            <div>RÉSULTAT NET</div>
+                            <div id="resultatNet" style="font-size: 36px; margin-top: 10px;">0.00€</div>
+                            <div id="resultatType" style="font-size: 18px; margin-top: 5px; opacity: 0.8;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MODULE: Tableau de Trésorerie -->
+                <div class="compta-module" id="compta-tresorerie">
+                    <div class="card" style="margin-bottom: 20px;">
+                        <h3>Tableau de Trésorerie Prévisionnel</h3>
+
+                        <div style="display: flex; gap: 15px; margin-bottom: 20px; align-items: center;">
+                            <label>Solde Initial :</label>
+                            <input type="number" id="soldeInitial" placeholder="0.00" style="padding: 10px; border: 1px solid #ddd; border-radius: 4px; width: 150px;">
+                            <span>€</span>
+                            <button class="btn" onclick="calculateTresorerie()">Calculer</button>
+                            <button class="btn" onclick="exportTresorerie()">📥 Export Excel</button>
+                        </div>
+
+                        <div class="stats-container">
+                            <div class="stat-card" style="background: #e8f5e9;">
+                                <div class="stat-value" id="totalEncaissements">0.00€</div>
+                                <div class="stat-label">Encaissements</div>
+                            </div>
+                            <div class="stat-card" style="background: #ffebee;">
+                                <div class="stat-value" id="totalDecaissements">0.00€</div>
+                                <div class="stat-label">Décaissements</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="soldeFinal">0.00€</div>
+                                <div class="stat-label">Solde Final</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h4 style="margin-bottom: 15px;">Détail par Mois</h4>
+                        <div id="tresorerieTable"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1761,6 +1956,156 @@
                 <button type="button" class="btn" onclick="closeDeleteClientModal()">Annuler</button>
                 <button type="button" class="btn btn-danger" onclick="confirmDeleteClient()">Supprimer définitivement</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal Ajouter/Modifier Charge -->
+    <div class="modal" id="chargeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="chargeModalTitle">Nouvelle Charge</h2>
+                <button class="close-modal" onclick="closeChargeModal()">×</button>
+            </div>
+            <form onsubmit="saveCharge(event)">
+                <div class="modal-body">
+                    <input type="hidden" id="chargeId">
+
+                    <div class="form-group">
+                        <label>Date *</label>
+                        <input type="date" id="chargeDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Catégorie *</label>
+                        <select id="chargeCategory" required>
+                            <option value="">-- Sélectionner --</option>
+                            <option value="loyer">Loyer</option>
+                            <option value="salaires">Salaires</option>
+                            <option value="fournitures">Fournitures</option>
+                            <option value="energie">Énergie</option>
+                            <option value="assurance">Assurance</option>
+                            <option value="transport">Transport</option>
+                            <option value="marketing">Marketing</option>
+                            <option value="autre">Autre</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description *</label>
+                        <input type="text" id="chargeDescription" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Fournisseur</label>
+                        <input type="text" id="chargeSupplier">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Montant HT *</label>
+                        <input type="number" id="chargeAmountHT" step="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Taux TVA (%)</label>
+                        <select id="chargeVATRate">
+                            <option value="0">0%</option>
+                            <option value="5.5">5.5%</option>
+                            <option value="10">10%</option>
+                            <option value="20" selected>20%</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Montant TVA</label>
+                        <input type="number" id="chargeVATAmount" step="0.01" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Montant TTC</label>
+                        <input type="number" id="chargeAmountTTC" step="0.01" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Compte Comptable</label>
+                        <select id="chargeAccount">
+                            <option value="607">607 - Achats de marchandises</option>
+                            <option value="613">613 - Locations</option>
+                            <option value="615">615 - Entretien et réparations</option>
+                            <option value="616">616 - Primes d'assurance</option>
+                            <option value="626">626 - Frais postaux et télécom</option>
+                            <option value="627">627 - Services bancaires</option>
+                            <option value="641">641 - Salaires bruts</option>
+                            <option value="645">645 - Charges sociales</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Mode de paiement</label>
+                        <select id="chargePaymentMethod">
+                            <option value="virement">Virement</option>
+                            <option value="carte">Carte bancaire</option>
+                            <option value="cheque">Chèque</option>
+                            <option value="especes">Espèces</option>
+                            <option value="prelevement">Prélèvement</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" onclick="closeChargeModal()">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Déclaration TVA -->
+    <div class="modal" id="declarationTVAModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Nouvelle Déclaration TVA (CA3)</h2>
+                <button class="close-modal" onclick="closeDeclarationTVAModal()">×</button>
+            </div>
+            <form onsubmit="saveDeclarationTVA(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Période de déclaration *</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input type="date" id="declarationPeriodStart" required style="flex: 1;">
+                            <span>au</span>
+                            <input type="date" id="declarationPeriodEnd" required style="flex: 1;">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>TVA Collectée (€)</label>
+                        <input type="number" id="declarationTVACollectee" step="0.01" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>TVA Déductible (€)</label>
+                        <input type="number" id="declarationTVADeductible" step="0.01" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>TVA à Payer (€)</label>
+                        <input type="number" id="declarationTVAAPayer" step="0.01" readonly style="font-weight: bold; background: #f5f5f5;">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Statut</label>
+                        <select id="declarationStatus">
+                            <option value="draft">Brouillon</option>
+                            <option value="submitted">Soumise</option>
+                        </select>
+                    </div>
+
+                    <button type="button" class="btn" onclick="calculateDeclarationTVA()" style="width: 100%; margin-bottom: 15px;">Recalculer</button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" onclick="closeDeclarationTVAModal()">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -3908,9 +4253,1094 @@
         switchTab = function(tabName) {
             originalSwitchTab(tabName);
             if (tabName === 'comptabilite') {
-                setTimeout(() => loadAccountingData(), 100);
+                setTimeout(() => {
+                    loadAccountingData();
+                    // Afficher le dashboard par défaut
+                    switchComptaModule('dashboard');
+                }, 100);
             }
         };
+
+        // ====================================
+        // NOUVEAU MODULE COMPTABLE PROFESSIONNEL
+        // ====================================
+
+        // Variables globales pour les données comptables
+        let chargesData = [];
+        let comptesData = [];
+        let ecrituresData = [];
+        let declarationsTVAData = [];
+        let currentChargeId = null;
+        let currentDeclarationId = null;
+
+        // Navigation entre modules comptables
+        function switchComptaModule(moduleName) {
+            // Cacher tous les modules
+            document.querySelectorAll('.compta-module').forEach(m => m.classList.remove('active'));
+
+            // Afficher le module sélectionné
+            const module = document.getElementById(`compta-${moduleName}`);
+            if (module) {
+                module.classList.add('active');
+            }
+
+            // Mettre à jour les onglets
+            const tabs = document.querySelectorAll('#tab-comptabilite .tabs .tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.textContent.includes(getModuleName(moduleName))) {
+                    tab.classList.add('active');
+                }
+            });
+
+            // Charger les données du module
+            switch(moduleName) {
+                case 'dashboard':
+                    loadAccountingData();
+                    break;
+                case 'tva':
+                    loadTVAModule();
+                    break;
+                case 'charges':
+                    loadCharges();
+                    break;
+                case 'plan-comptable':
+                    loadPlanComptable();
+                    break;
+                case 'livre-journal':
+                    loadLivreJournal();
+                    break;
+                case 'balance':
+                    setDefaultBalanceDate();
+                    break;
+                case 'resultat':
+                    setDefaultResultatDates();
+                    break;
+                case 'tresorerie':
+                    loadTresorerieData();
+                    break;
+            }
+        }
+
+        function getModuleName(key) {
+            const names = {
+                'dashboard': 'Dashboard',
+                'tva': 'TVA',
+                'charges': 'Charges',
+                'plan-comptable': 'Plan Comptable',
+                'livre-journal': 'Livre Journal',
+                'balance': 'Balance',
+                'resultat': 'Résultat',
+                'tresorerie': 'Trésorerie'
+            };
+            return names[key] || key;
+        }
+
+        // ====================================
+        // MODULE 1: GESTION DES CHARGES
+        // ====================================
+
+        async function loadCharges() {
+            try {
+                const data = await apiRequest('/api/charges');
+                chargesData = data.charges || [];
+                displayCharges();
+            } catch (error) {
+                console.error('Erreur chargement charges:', error);
+                alert('Erreur lors du chargement des charges');
+            }
+        }
+
+        function displayCharges() {
+            const tbody = document.getElementById('chargesTableBody');
+            if (!tbody) return;
+
+            if (chargesData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px; color: #999;">Aucune charge enregistrée</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = chargesData.map(charge => `
+                <tr>
+                    <td>${new Date(charge.date).toLocaleDateString('fr-FR')}</td>
+                    <td>${charge.category}</td>
+                    <td>${charge.description || '-'}</td>
+                    <td>${(charge.amount_ht || 0).toFixed(2)}€</td>
+                    <td>${(charge.vat_amount || 0).toFixed(2)}€</td>
+                    <td>${(charge.amount_ttc || 0).toFixed(2)}€</td>
+                    <td>${charge.supplier || '-'}</td>
+                    <td>
+                        <button class="btn btn-sm" onclick="editCharge('${charge.id}')">Modifier</button>
+                        <button class="btn btn-sm" onclick="deleteCharge('${charge.id}')">Supprimer</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Calculer les totaux
+            const totalHT = chargesData.reduce((sum, c) => sum + (c.amount_ht || 0), 0);
+            const totalTVA = chargesData.reduce((sum, c) => sum + (c.vat_amount || 0), 0);
+            const totalTTC = chargesData.reduce((sum, c) => sum + (c.amount_ttc || 0), 0);
+
+            document.getElementById('chargesTotalHT').textContent = totalHT.toFixed(2) + '€';
+            document.getElementById('chargesTotalTVA').textContent = totalTVA.toFixed(2) + '€';
+            document.getElementById('chargesTotalTTC').textContent = totalTTC.toFixed(2) + '€';
+        }
+
+        function filterCharges() {
+            const category = document.getElementById('chargeFilterCategory').value;
+            const startDate = document.getElementById('chargeFilterStart').value;
+            const endDate = document.getElementById('chargeFilterEnd').value;
+
+            let filtered = [...chargesData];
+
+            if (category) {
+                filtered = filtered.filter(c => c.category === category);
+            }
+
+            if (startDate) {
+                filtered = filtered.filter(c => new Date(c.date) >= new Date(startDate));
+            }
+
+            if (endDate) {
+                filtered = filtered.filter(c => new Date(c.date) <= new Date(endDate));
+            }
+
+            // Temporairement remplacer les données pour l'affichage
+            const originalData = chargesData;
+            chargesData = filtered;
+            displayCharges();
+            chargesData = originalData;
+        }
+
+        function openChargeModal() {
+            currentChargeId = null;
+            document.getElementById('chargeModalTitle').textContent = 'Nouvelle Charge';
+            document.getElementById('chargeForm').reset();
+            document.getElementById('chargeDate').valueAsDate = new Date();
+            document.getElementById('chargeModal').classList.add('show');
+            calculateChargeVAT();
+        }
+
+        function closeChargeModal() {
+            document.getElementById('chargeModal').classList.remove('show');
+            currentChargeId = null;
+        }
+
+        function editCharge(chargeId) {
+            const charge = chargesData.find(c => c.id === chargeId);
+            if (!charge) return;
+
+            currentChargeId = chargeId;
+            document.getElementById('chargeModalTitle').textContent = 'Modifier la Charge';
+            document.getElementById('chargeDate').value = charge.date.split('T')[0];
+            document.getElementById('chargeCategory').value = charge.category;
+            document.getElementById('chargeDescription').value = charge.description || '';
+            document.getElementById('chargeSupplier').value = charge.supplier || '';
+            document.getElementById('chargeAmountHT').value = charge.amount_ht || 0;
+            document.getElementById('chargeVATRate').value = charge.vat_rate || 20;
+            document.getElementById('chargeVATAmount').value = charge.vat_amount || 0;
+            document.getElementById('chargeAmountTTC').value = charge.amount_ttc || 0;
+            document.getElementById('chargeAccount').value = charge.compte_comptable || '607';
+            document.getElementById('chargePaymentMethod').value = charge.payment_method || 'virement';
+
+            document.getElementById('chargeModal').classList.add('show');
+        }
+
+        async function deleteCharge(chargeId) {
+            if (!confirm('Êtes-vous sûr de vouloir supprimer cette charge ?')) return;
+
+            try {
+                await apiRequest(`/api/charges/${chargeId}`, { method: 'DELETE' });
+                await loadCharges();
+            } catch (error) {
+                alert('Erreur lors de la suppression: ' + error.message);
+            }
+        }
+
+        function calculateChargeVAT() {
+            const amountHT = parseFloat(document.getElementById('chargeAmountHT').value) || 0;
+            const vatRate = parseFloat(document.getElementById('chargeVATRate').value) || 0;
+
+            const vatAmount = amountHT * (vatRate / 100);
+            const amountTTC = amountHT + vatAmount;
+
+            document.getElementById('chargeVATAmount').value = vatAmount.toFixed(2);
+            document.getElementById('chargeAmountTTC').value = amountTTC.toFixed(2);
+        }
+
+        // Attacher les événements de calcul TVA
+        setTimeout(() => {
+            const amountHTInput = document.getElementById('chargeAmountHT');
+            const vatRateInput = document.getElementById('chargeVATRate');
+
+            if (amountHTInput) amountHTInput.addEventListener('input', calculateChargeVAT);
+            if (vatRateInput) vatRateInput.addEventListener('change', calculateChargeVAT);
+        }, 100);
+
+        async function saveCharge(e) {
+            e.preventDefault();
+
+            const chargeData = {
+                date: document.getElementById('chargeDate').value,
+                category: document.getElementById('chargeCategory').value,
+                description: document.getElementById('chargeDescription').value,
+                supplier: document.getElementById('chargeSupplier').value,
+                amount_ht: parseFloat(document.getElementById('chargeAmountHT').value) || 0,
+                vat_rate: parseFloat(document.getElementById('chargeVATRate').value) || 0,
+                vat_amount: parseFloat(document.getElementById('chargeVATAmount').value) || 0,
+                amount_ttc: parseFloat(document.getElementById('chargeAmountTTC').value) || 0,
+                compte_comptable: document.getElementById('chargeAccount').value,
+                payment_method: document.getElementById('chargePaymentMethod').value
+            };
+
+            try {
+                if (currentChargeId) {
+                    await apiRequest(`/api/charges/${currentChargeId}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(chargeData)
+                    });
+                } else {
+                    await apiRequest('/api/charges', {
+                        method: 'POST',
+                        body: JSON.stringify(chargeData)
+                    });
+                }
+
+                closeChargeModal();
+                await loadCharges();
+            } catch (error) {
+                alert('Erreur lors de l\'enregistrement: ' + error.message);
+            }
+        }
+
+        // ====================================
+        // MODULE 2: PLAN COMPTABLE
+        // ====================================
+
+        async function loadPlanComptable() {
+            try {
+                const data = await apiRequest('/api/comptes');
+                comptesData = data.comptes || [];
+
+                if (comptesData.length === 0) {
+                    // Proposer d'initialiser le plan comptable
+                    if (confirm('Le plan comptable est vide. Voulez-vous initialiser le plan comptable standard ?')) {
+                        await initPlanComptable();
+                    }
+                } else {
+                    displayPlanComptable();
+                }
+            } catch (error) {
+                console.error('Erreur chargement plan comptable:', error);
+                alert('Erreur lors du chargement du plan comptable');
+            }
+        }
+
+        async function initPlanComptable() {
+            try {
+                await apiRequest('/api/comptes/init', { method: 'POST' });
+                await loadPlanComptable();
+            } catch (error) {
+                alert('Erreur lors de l\'initialisation: ' + error.message);
+            }
+        }
+
+        function displayPlanComptable() {
+            const tbody = document.getElementById('comptesTableBody');
+            if (!tbody) return;
+
+            if (comptesData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 40px; color: #999;">Aucun compte. <button class="btn" onclick="initPlanComptable()">Initialiser le plan comptable</button></td></tr>';
+                return;
+            }
+
+            // Grouper par classe
+            const grouped = {};
+            comptesData.forEach(compte => {
+                if (!grouped[compte.classe]) {
+                    grouped[compte.classe] = [];
+                }
+                grouped[compte.classe].push(compte);
+            });
+
+            let html = '';
+            Object.keys(grouped).sort().forEach(classe => {
+                html += `<tr style="background: #f5f5f5; font-weight: bold;"><td colspan="4">Classe ${classe}</td></tr>`;
+                grouped[classe].forEach(compte => {
+                    html += `
+                        <tr>
+                            <td>${compte.numero_compte}</td>
+                            <td>${compte.libelle}</td>
+                            <td>${compte.type}</td>
+                            <td>Classe ${compte.classe}</td>
+                        </tr>
+                    `;
+                });
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        function filterComptes() {
+            const classe = document.getElementById('compteFilterClasse').value;
+            const search = document.getElementById('compteFilterSearch').value.toLowerCase();
+
+            let filtered = [...comptesData];
+
+            if (classe) {
+                filtered = filtered.filter(c => c.classe.toString() === classe);
+            }
+
+            if (search) {
+                filtered = filtered.filter(c =>
+                    c.numero_compte.toLowerCase().includes(search) ||
+                    c.libelle.toLowerCase().includes(search)
+                );
+            }
+
+            const originalData = comptesData;
+            comptesData = filtered;
+            displayPlanComptable();
+            comptesData = originalData;
+        }
+
+        // ====================================
+        // MODULE 3: LIVRE JOURNAL
+        // ====================================
+
+        async function loadLivreJournal() {
+            try {
+                const data = await apiRequest('/api/ecritures');
+                ecrituresData = data.ecritures || [];
+                displayLivreJournal();
+            } catch (error) {
+                console.error('Erreur chargement livre journal:', error);
+                alert('Erreur lors du chargement du livre journal');
+            }
+        }
+
+        function displayLivreJournal() {
+            const tbody = document.getElementById('ecrituresTableBody');
+            if (!tbody) return;
+
+            if (ecrituresData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px; color: #999;">Aucune écriture comptable</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = ecrituresData.map(ecriture => `
+                <tr>
+                    <td>${new Date(ecriture.date).toLocaleDateString('fr-FR')}</td>
+                    <td>${ecriture.journal}</td>
+                    <td>${ecriture.numero_piece || '-'}</td>
+                    <td>${ecriture.compte}</td>
+                    <td>${ecriture.libelle}</td>
+                    <td style="text-align: right;">${(ecriture.debit || 0).toFixed(2)}€</td>
+                    <td style="text-align: right;">${(ecriture.credit || 0).toFixed(2)}€</td>
+                </tr>
+            `).join('');
+
+            // Calculer les totaux
+            const totalDebit = ecrituresData.reduce((sum, e) => sum + (e.debit || 0), 0);
+            const totalCredit = ecrituresData.reduce((sum, e) => sum + (e.credit || 0), 0);
+
+            document.getElementById('journalTotalDebit').textContent = totalDebit.toFixed(2) + '€';
+            document.getElementById('journalTotalCredit').textContent = totalCredit.toFixed(2) + '€';
+        }
+
+        function filterLivreJournal() {
+            const journal = document.getElementById('journalFilter').value;
+            const startDate = document.getElementById('journalDateStart').value;
+            const endDate = document.getElementById('journalDateEnd').value;
+
+            let filtered = [...ecrituresData];
+
+            if (journal) {
+                filtered = filtered.filter(e => e.journal === journal);
+            }
+
+            if (startDate) {
+                filtered = filtered.filter(e => new Date(e.date) >= new Date(startDate));
+            }
+
+            if (endDate) {
+                filtered = filtered.filter(e => new Date(e.date) <= new Date(endDate));
+            }
+
+            const originalData = ecrituresData;
+            ecrituresData = filtered;
+            displayLivreJournal();
+            ecrituresData = originalData;
+        }
+
+        async function exportFEC() {
+            try {
+                const startDate = document.getElementById('journalDateStart').value;
+                const endDate = document.getElementById('journalDateEnd').value;
+
+                let filtered = [...ecrituresData];
+                if (startDate) filtered = filtered.filter(e => new Date(e.date) >= new Date(startDate));
+                if (endDate) filtered = filtered.filter(e => new Date(e.date) <= new Date(endDate));
+
+                // Format FEC : JournalCode|JournalLib|EcritureNum|EcritureDate|CompteNum|CompteLib|CompAuxNum|CompAuxLib|PieceRef|PieceDate|EcritureLib|Debit|Credit|EcritureLet|DateLet|ValidDate|Montantdevise|Idevise
+                let fecContent = 'JournalCode|JournalLib|EcritureNum|EcritureDate|CompteNum|CompteLib|CompAuxNum|CompAuxLib|PieceRef|PieceDate|EcritureLib|Debit|Credit|EcritureLet|DateLet|ValidDate|Montantdevise|Idevise\n';
+
+                filtered.forEach(ecriture => {
+                    const date = ecriture.date.split('T')[0].replace(/-/g, '');
+                    const journalLib = ecriture.journal === 'VT' ? 'Ventes' : ecriture.journal === 'AC' ? 'Achats' : 'Operations';
+                    const compteLib = comptesData.find(c => c.numero_compte === ecriture.compte)?.libelle || '';
+
+                    fecContent += [
+                        ecriture.journal,
+                        journalLib,
+                        ecriture.numero_piece || '',
+                        date,
+                        ecriture.compte,
+                        compteLib,
+                        '', // CompAuxNum
+                        '', // CompAuxLib
+                        ecriture.numero_piece || '',
+                        date,
+                        ecriture.libelle.replace(/\|/g, ' '),
+                        (ecriture.debit || 0).toFixed(2).replace('.', ','),
+                        (ecriture.credit || 0).toFixed(2).replace('.', ','),
+                        '', // EcritureLet
+                        '', // DateLet
+                        date,
+                        '', // Montantdevise
+                        ''  // Idevise
+                    ].join('|') + '\n';
+                });
+
+                // Télécharger le fichier
+                const blob = new Blob([fecContent], { type: 'text/plain;charset=utf-8' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                const today = new Date().toISOString().split('T')[0];
+                link.download = `FEC-${today}.txt`;
+                link.click();
+            } catch (error) {
+                alert('Erreur lors de l\'export FEC: ' + error.message);
+            }
+        }
+
+        // ====================================
+        // MODULE 4: TVA
+        // ====================================
+
+        async function loadTVAModule() {
+            try {
+                const data = await apiRequest('/api/declarations-tva');
+                declarationsTVAData = data.declarations || [];
+                displayDeclarationsTVA();
+
+                // Définir les dates par défaut pour la synthèse
+                const today = new Date();
+                const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+                const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+                document.getElementById('tvaPeriodStart').value = firstDay.toISOString().split('T')[0];
+                document.getElementById('tvaPeriodEnd').value = lastDay.toISOString().split('T')[0];
+            } catch (error) {
+                console.error('Erreur chargement TVA:', error);
+                alert('Erreur lors du chargement des déclarations TVA');
+            }
+        }
+
+        function displayDeclarationsTVA() {
+            const tbody = document.getElementById('declarationsTVATableBody');
+            if (!tbody) return;
+
+            if (declarationsTVAData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: #999;">Aucune déclaration TVA</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = declarationsTVAData.map(decl => `
+                <tr>
+                    <td>${new Date(decl.period_start).toLocaleDateString('fr-FR')} - ${new Date(decl.period_end).toLocaleDateString('fr-FR')}</td>
+                    <td>${(decl.tva_collectee || 0).toFixed(2)}€</td>
+                    <td>${(decl.tva_deductible || 0).toFixed(2)}€</td>
+                    <td style="font-weight: bold;">${(decl.tva_a_payer || 0).toFixed(2)}€</td>
+                    <td><span class="badge">${decl.status === 'submitted' ? 'Soumise' : 'Brouillon'}</span></td>
+                    <td>
+                        <button class="btn btn-sm" onclick="viewDeclarationTVA('${decl.id}')">Voir</button>
+                        ${decl.status === 'draft' ? `<button class="btn btn-sm" onclick="deleteDeclarationTVA('${decl.id}')">Supprimer</button>` : ''}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function calculateTVASynthese() {
+            try {
+                const startDate = document.getElementById('tvaPeriodStart').value;
+                const endDate = document.getElementById('tvaPeriodEnd').value;
+
+                if (!startDate || !endDate) {
+                    alert('Veuillez sélectionner une période');
+                    return;
+                }
+
+                const data = await apiRequest(`/api/tva/synthese?start=${startDate}&end=${endDate}`);
+
+                document.getElementById('tvaCollectee').textContent = (data.tva_collectee || 0).toFixed(2) + '€';
+                document.getElementById('tvaDeductible').textContent = (data.tva_deductible || 0).toFixed(2) + '€';
+                document.getElementById('tvaAPayer').textContent = (data.tva_a_payer || 0).toFixed(2) + '€';
+            } catch (error) {
+                alert('Erreur lors du calcul de la TVA: ' + error.message);
+            }
+        }
+
+        function openDeclarationTVAModal() {
+            currentDeclarationId = null;
+            document.getElementById('declarationTVAForm').reset();
+
+            // Définir la période du mois en cours
+            const today = new Date();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+            document.getElementById('declarationPeriodStart').value = firstDay.toISOString().split('T')[0];
+            document.getElementById('declarationPeriodEnd').value = lastDay.toISOString().split('T')[0];
+
+            document.getElementById('declarationTVAModal').classList.add('show');
+
+            // Calculer automatiquement
+            setTimeout(() => calculateDeclarationTVA(), 100);
+        }
+
+        function closeDeclarationTVAModal() {
+            document.getElementById('declarationTVAModal').classList.remove('show');
+            currentDeclarationId = null;
+        }
+
+        async function calculateDeclarationTVA() {
+            const startDate = document.getElementById('declarationPeriodStart').value;
+            const endDate = document.getElementById('declarationPeriodEnd').value;
+
+            if (!startDate || !endDate) return;
+
+            try {
+                const data = await apiRequest(`/api/tva/synthese?start=${startDate}&end=${endDate}`);
+
+                document.getElementById('declarationTVACollectee').value = (data.tva_collectee || 0).toFixed(2);
+                document.getElementById('declarationTVADeductible').value = (data.tva_deductible || 0).toFixed(2);
+                document.getElementById('declarationTVAAPayer').value = (data.tva_a_payer || 0).toFixed(2);
+            } catch (error) {
+                console.error('Erreur calcul TVA:', error);
+            }
+        }
+
+        async function saveDeclarationTVA(e) {
+            e.preventDefault();
+
+            const declarationData = {
+                period_start: document.getElementById('declarationPeriodStart').value,
+                period_end: document.getElementById('declarationPeriodEnd').value,
+                tva_collectee: parseFloat(document.getElementById('declarationTVACollectee').value) || 0,
+                tva_deductible: parseFloat(document.getElementById('declarationTVADeductible').value) || 0,
+                tva_a_payer: parseFloat(document.getElementById('declarationTVAAPayer').value) || 0,
+                status: document.getElementById('declarationStatus').value
+            };
+
+            try {
+                await apiRequest('/api/declarations-tva', {
+                    method: 'POST',
+                    body: JSON.stringify(declarationData)
+                });
+
+                closeDeclarationTVAModal();
+                await loadTVAModule();
+            } catch (error) {
+                alert('Erreur lors de l\'enregistrement: ' + error.message);
+            }
+        }
+
+        async function deleteDeclarationTVA(declarationId) {
+            if (!confirm('Êtes-vous sûr de vouloir supprimer cette déclaration ?')) return;
+
+            try {
+                await apiRequest(`/api/declarations-tva/${declarationId}`, { method: 'DELETE' });
+                await loadTVAModule();
+            } catch (error) {
+                alert('Erreur lors de la suppression: ' + error.message);
+            }
+        }
+
+        function viewDeclarationTVA(declarationId) {
+            const decl = declarationsTVAData.find(d => d.id === declarationId);
+            if (!decl) return;
+
+            alert(`Déclaration TVA
+Période: ${new Date(decl.period_start).toLocaleDateString('fr-FR')} - ${new Date(decl.period_end).toLocaleDateString('fr-FR')}
+
+TVA Collectée: ${(decl.tva_collectee || 0).toFixed(2)}€
+TVA Déductible: ${(decl.tva_deductible || 0).toFixed(2)}€
+TVA à Payer: ${(decl.tva_a_payer || 0).toFixed(2)}€
+
+Statut: ${decl.status === 'submitted' ? 'Soumise' : 'Brouillon'}
+${decl.submitted_at ? 'Soumise le: ' + new Date(decl.submitted_at).toLocaleDateString('fr-FR') : ''}`);
+        }
+
+        // ====================================
+        // MODULE 5: BALANCE COMPTABLE
+        // ====================================
+
+        function setDefaultBalanceDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('balanceDate').value = today;
+        }
+
+        async function calculateBalance() {
+            const date = document.getElementById('balanceDate').value;
+            if (!date) {
+                alert('Veuillez sélectionner une date');
+                return;
+            }
+
+            try {
+                // Charger les écritures si nécessaire
+                if (ecrituresData.length === 0) {
+                    const data = await apiRequest('/api/ecritures');
+                    ecrituresData = data.ecritures || [];
+                }
+
+                // Filtrer les écritures jusqu'à la date
+                const filtered = ecrituresData.filter(e => new Date(e.date) <= new Date(date));
+
+                // Calculer la balance par compte
+                const balance = {};
+                filtered.forEach(ecriture => {
+                    if (!balance[ecriture.compte]) {
+                        balance[ecriture.compte] = {
+                            compte: ecriture.compte,
+                            libelle: comptesData.find(c => c.numero_compte === ecriture.compte)?.libelle || '-',
+                            debit: 0,
+                            credit: 0
+                        };
+                    }
+                    balance[ecriture.compte].debit += (ecriture.debit || 0);
+                    balance[ecriture.compte].credit += (ecriture.credit || 0);
+                });
+
+                // Calculer les soldes
+                const balanceArray = Object.values(balance).map(b => ({
+                    ...b,
+                    solde_debiteur: b.debit > b.credit ? b.debit - b.credit : 0,
+                    solde_crediteur: b.credit > b.debit ? b.credit - b.debit : 0
+                }));
+
+                displayBalance(balanceArray);
+            } catch (error) {
+                alert('Erreur lors du calcul de la balance: ' + error.message);
+            }
+        }
+
+        function displayBalance(balanceData) {
+            const tbody = document.getElementById('balanceTableBody');
+            if (!tbody) return;
+
+            if (balanceData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: #999;">Aucune donnée pour cette période</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = balanceData.map(b => `
+                <tr>
+                    <td>${b.compte}</td>
+                    <td>${b.libelle}</td>
+                    <td style="text-align: right;">${b.debit.toFixed(2)}€</td>
+                    <td style="text-align: right;">${b.credit.toFixed(2)}€</td>
+                    <td style="text-align: right;">${b.solde_debiteur.toFixed(2)}€</td>
+                    <td style="text-align: right;">${b.solde_crediteur.toFixed(2)}€</td>
+                </tr>
+            `).join('');
+
+            // Calculer les totaux
+            const totalDebit = balanceData.reduce((sum, b) => sum + b.debit, 0);
+            const totalCredit = balanceData.reduce((sum, b) => sum + b.credit, 0);
+            const totalSoldeDebiteur = balanceData.reduce((sum, b) => sum + b.solde_debiteur, 0);
+            const totalSoldeCrediteur = balanceData.reduce((sum, b) => sum + b.solde_crediteur, 0);
+
+            document.getElementById('balanceTotalDebit').textContent = totalDebit.toFixed(2) + '€';
+            document.getElementById('balanceTotalCredit').textContent = totalCredit.toFixed(2) + '€';
+            document.getElementById('balanceTotalSoldeDebiteur').textContent = totalSoldeDebiteur.toFixed(2) + '€';
+            document.getElementById('balanceTotalSoldeCrediteur').textContent = totalSoldeCrediteur.toFixed(2) + '€';
+        }
+
+        async function exportBalance() {
+            const date = document.getElementById('balanceDate').value;
+            if (!date) {
+                alert('Veuillez d\'abord calculer la balance');
+                return;
+            }
+
+            const tbody = document.getElementById('balanceTableBody');
+            if (!tbody || tbody.children.length === 0) {
+                alert('Aucune donnée à exporter');
+                return;
+            }
+
+            // Extraire les données du tableau
+            const rows = Array.from(tbody.children);
+            const data = [
+                ['Balance Comptable au ' + new Date(date).toLocaleDateString('fr-FR')],
+                [],
+                ['Compte', 'Libellé', 'Total Débit', 'Total Crédit', 'Solde Débiteur', 'Solde Créditeur']
+            ];
+
+            rows.forEach(row => {
+                if (row.children.length === 6) {
+                    data.push([
+                        row.children[0].textContent,
+                        row.children[1].textContent,
+                        row.children[2].textContent,
+                        row.children[3].textContent,
+                        row.children[4].textContent,
+                        row.children[5].textContent
+                    ]);
+                }
+            });
+
+            // Ajouter les totaux
+            data.push([]);
+            data.push([
+                'TOTAUX',
+                '',
+                document.getElementById('balanceTotalDebit').textContent,
+                document.getElementById('balanceTotalCredit').textContent,
+                document.getElementById('balanceTotalSoldeDebiteur').textContent,
+                document.getElementById('balanceTotalSoldeCrediteur').textContent
+            ]);
+
+            const ws = XLSX.utils.aoa_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Balance');
+            XLSX.writeFile(wb, `balance-${date}.xlsx`);
+        }
+
+        // ====================================
+        // MODULE 6: COMPTE DE RÉSULTAT
+        // ====================================
+
+        function setDefaultResultatDates() {
+            const today = new Date();
+            const firstDay = new Date(today.getFullYear(), 0, 1);
+
+            document.getElementById('resultatDateStart').value = firstDay.toISOString().split('T')[0];
+            document.getElementById('resultatDateEnd').value = today.toISOString().split('T')[0];
+        }
+
+        async function calculateResultat() {
+            const startDate = document.getElementById('resultatDateStart').value;
+            const endDate = document.getElementById('resultatDateEnd').value;
+
+            if (!startDate || !endDate) {
+                alert('Veuillez sélectionner une période');
+                return;
+            }
+
+            try {
+                // Charger les écritures si nécessaire
+                if (ecrituresData.length === 0) {
+                    const data = await apiRequest('/api/ecritures');
+                    ecrituresData = data.ecritures || [];
+                }
+
+                // Filtrer les écritures de la période
+                const filtered = ecrituresData.filter(e => {
+                    const date = new Date(e.date);
+                    return date >= new Date(startDate) && date <= new Date(endDate);
+                });
+
+                // Séparer produits (classe 7) et charges (classe 6)
+                const produits = {};
+                const charges = {};
+
+                filtered.forEach(ecriture => {
+                    const classe = ecriture.compte.charAt(0);
+
+                    if (classe === '7') {
+                        // Produits (crédit)
+                        if (!produits[ecriture.compte]) {
+                            produits[ecriture.compte] = {
+                                compte: ecriture.compte,
+                                libelle: comptesData.find(c => c.numero_compte === ecriture.compte)?.libelle || '-',
+                                montant: 0
+                            };
+                        }
+                        produits[ecriture.compte].montant += (ecriture.credit - ecriture.debit);
+                    } else if (classe === '6') {
+                        // Charges (débit)
+                        if (!charges[ecriture.compte]) {
+                            charges[ecriture.compte] = {
+                                compte: ecriture.compte,
+                                libelle: comptesData.find(c => c.numero_compte === ecriture.compte)?.libelle || '-',
+                                montant: 0
+                            };
+                        }
+                        charges[ecriture.compte].montant += (ecriture.debit - ecriture.credit);
+                    }
+                });
+
+                displayResultat(Object.values(produits), Object.values(charges));
+            } catch (error) {
+                alert('Erreur lors du calcul du résultat: ' + error.message);
+            }
+        }
+
+        function displayResultat(produits, charges) {
+            const produitsDiv = document.getElementById('produitsDetail');
+            const chargesDiv = document.getElementById('chargesDetail');
+
+            if (produits.length === 0) {
+                produitsDiv.innerHTML = '<p style="color: #999;">Aucun produit</p>';
+            } else {
+                produitsDiv.innerHTML = produits.map(p => `
+                    <div style="display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #ddd;">
+                        <span>${p.compte} - ${p.libelle}</span>
+                        <span style="font-weight: bold;">${p.montant.toFixed(2)}€</span>
+                    </div>
+                `).join('');
+            }
+
+            if (charges.length === 0) {
+                chargesDiv.innerHTML = '<p style="color: #999;">Aucune charge</p>';
+            } else {
+                chargesDiv.innerHTML = charges.map(c => `
+                    <div style="display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #ddd;">
+                        <span>${c.compte} - ${c.libelle}</span>
+                        <span style="font-weight: bold;">${c.montant.toFixed(2)}€</span>
+                    </div>
+                `).join('');
+            }
+
+            const totalProduits = produits.reduce((sum, p) => sum + p.montant, 0);
+            const totalCharges = charges.reduce((sum, c) => sum + c.montant, 0);
+            const resultat = totalProduits - totalCharges;
+
+            document.getElementById('totalProduits').textContent = totalProduits.toFixed(2) + '€';
+            document.getElementById('totalCharges').textContent = totalCharges.toFixed(2) + '€';
+            document.getElementById('resultatNet').textContent = resultat.toFixed(2) + '€';
+            document.getElementById('resultatNet').style.color = resultat >= 0 ? '#00ff00' : '#ff0000';
+        }
+
+        async function exportResultat() {
+            const startDate = document.getElementById('resultatDateStart').value;
+            const endDate = document.getElementById('resultatDateEnd').value;
+
+            if (!startDate || !endDate) {
+                alert('Veuillez d\'abord calculer le résultat');
+                return;
+            }
+
+            const produitsDiv = document.getElementById('produitsDetail');
+            const chargesDiv = document.getElementById('chargesDetail');
+
+            if (!produitsDiv || !chargesDiv) {
+                alert('Aucune donnée à exporter');
+                return;
+            }
+
+            const data = [
+                ['Compte de Résultat'],
+                [`Période: ${new Date(startDate).toLocaleDateString('fr-FR')} - ${new Date(endDate).toLocaleDateString('fr-FR')}`],
+                [],
+                ['PRODUITS', '', 'CHARGES', '']
+            ];
+
+            // Extraire produits et charges
+            const produitsElements = produitsDiv.querySelectorAll('div');
+            const chargesElements = chargesDiv.querySelectorAll('div');
+            const maxRows = Math.max(produitsElements.length, chargesElements.length);
+
+            for (let i = 0; i < maxRows; i++) {
+                const produit = produitsElements[i];
+                const charge = chargesElements[i];
+
+                data.push([
+                    produit ? produit.children[0].textContent : '',
+                    produit ? produit.children[1].textContent : '',
+                    charge ? charge.children[0].textContent : '',
+                    charge ? charge.children[1].textContent : ''
+                ]);
+            }
+
+            data.push([]);
+            data.push([
+                'TOTAL PRODUITS',
+                document.getElementById('totalProduits').textContent,
+                'TOTAL CHARGES',
+                document.getElementById('totalCharges').textContent
+            ]);
+            data.push([]);
+            data.push([
+                'RÉSULTAT NET',
+                document.getElementById('resultatNet').textContent
+            ]);
+
+            const ws = XLSX.utils.aoa_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Résultat');
+            XLSX.writeFile(wb, `compte-resultat-${startDate}-${endDate}.xlsx`);
+        }
+
+        // ====================================
+        // MODULE 7: TRÉSORERIE
+        // ====================================
+
+        async function loadTresorerieData() {
+            // Initialiser avec les dates par défaut
+            const today = new Date();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+
+            document.getElementById('tresorerieDateStart').value = firstDay.toISOString().split('T')[0];
+            document.getElementById('tresorerieDateEnd').value = today.toISOString().split('T')[0];
+        }
+
+        async function calculateTresorerie() {
+            const startDate = document.getElementById('tresorerieDateStart').value;
+            const endDate = document.getElementById('tresorerieDateEnd').value;
+
+            if (!startDate || !endDate) {
+                alert('Veuillez sélectionner une période');
+                return;
+            }
+
+            try {
+                // Charger les factures et charges de la période
+                const invoicesInPeriod = invoicesData.filter(inv => {
+                    const date = new Date(inv.invoice_date);
+                    return date >= new Date(startDate) && date <= new Date(endDate);
+                });
+
+                if (chargesData.length === 0) {
+                    const data = await apiRequest('/api/charges');
+                    chargesData = data.charges || [];
+                }
+
+                const chargesInPeriod = chargesData.filter(charge => {
+                    const date = new Date(charge.date);
+                    return date >= new Date(startDate) && date <= new Date(endDate);
+                });
+
+                // Calculer les totaux
+                const encaissements = invoicesInPeriod.reduce((sum, inv) => sum + (inv.total_ttc || 0), 0);
+                const decaissements = chargesInPeriod.reduce((sum, charge) => sum + (charge.amount_ttc || 0), 0);
+                const solde = encaissements - decaissements;
+
+                document.getElementById('tresorerieEncaissements').textContent = encaissements.toFixed(2) + '€';
+                document.getElementById('tresorerieDecaissements').textContent = decaissements.toFixed(2) + '€';
+                document.getElementById('tresorerieSolde').textContent = solde.toFixed(2) + '€';
+                document.getElementById('tresorerieSolde').style.color = solde >= 0 ? '#00ff00' : '#ff0000';
+
+                // Afficher les détails
+                displayTresorerieDetails(invoicesInPeriod, chargesInPeriod);
+            } catch (error) {
+                alert('Erreur lors du calcul de la trésorerie: ' + error.message);
+            }
+        }
+
+        function displayTresorerieDetails(invoices, charges) {
+            const tbody = document.getElementById('tresorerieTableBody');
+            if (!tbody) return;
+
+            const movements = [];
+
+            // Ajouter les encaissements
+            invoices.forEach(inv => {
+                movements.push({
+                    date: inv.invoice_date,
+                    type: 'Encaissement',
+                    libelle: `Facture ${inv.invoice_number} - ${inv.client_name}`,
+                    montant: inv.total_ttc || 0,
+                    sens: 'in'
+                });
+            });
+
+            // Ajouter les décaissements
+            charges.forEach(charge => {
+                movements.push({
+                    date: charge.date,
+                    type: 'Décaissement',
+                    libelle: `${charge.category} - ${charge.description || charge.supplier || ''}`,
+                    montant: charge.amount_ttc || 0,
+                    sens: 'out'
+                });
+            });
+
+            // Trier par date
+            movements.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            if (movements.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 40px; color: #999;">Aucun mouvement de trésorerie</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = movements.map(m => `
+                <tr>
+                    <td>${new Date(m.date).toLocaleDateString('fr-FR')}</td>
+                    <td>${m.type}</td>
+                    <td>${m.libelle}</td>
+                    <td style="text-align: right; color: ${m.sens === 'in' ? '#00aa00' : '#aa0000'};">
+                        ${m.sens === 'in' ? '+' : '-'}${m.montant.toFixed(2)}€
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function exportTresorerie() {
+            const startDate = document.getElementById('tresorerieDateStart').value;
+            const endDate = document.getElementById('tresorerieDateEnd').value;
+
+            if (!startDate || !endDate) {
+                alert('Veuillez d\'abord calculer la trésorerie');
+                return;
+            }
+
+            const tbody = document.getElementById('tresorerieTableBody');
+            if (!tbody || tbody.children.length === 0) {
+                alert('Aucune donnée à exporter');
+                return;
+            }
+
+            const data = [
+                ['Tableau de Trésorerie'],
+                [`Période: ${new Date(startDate).toLocaleDateString('fr-FR')} - ${new Date(endDate).toLocaleDateString('fr-FR')}`],
+                [],
+                ['Date', 'Type', 'Libellé', 'Montant']
+            ];
+
+            Array.from(tbody.children).forEach(row => {
+                if (row.children.length === 4) {
+                    data.push([
+                        row.children[0].textContent,
+                        row.children[1].textContent,
+                        row.children[2].textContent,
+                        row.children[3].textContent
+                    ]);
+                }
+            });
+
+            data.push([]);
+            data.push([
+                'Total Encaissements',
+                document.getElementById('tresorerieEncaissements').textContent
+            ]);
+            data.push([
+                'Total Décaissements',
+                document.getElementById('tresorerieDecaissements').textContent
+            ]);
+            data.push([
+                'Solde',
+                document.getElementById('tresorerieSolde').textContent
+            ]);
+
+            const ws = XLSX.utils.aoa_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Trésorerie');
+            XLSX.writeFile(wb, `tresorerie-${startDate}-${endDate}.xlsx`);
+        }
     </script>
 </body>
 </html>
