@@ -1,7 +1,5 @@
-*.backup-*
-BACKUP_*
-.DS_Store
-.vscode/
-.env
 node_modules/
+.wrangler/
+.env
+.DS_Store
 *.log
