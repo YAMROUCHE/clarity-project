@@ -1509,9 +1509,21 @@
                     <div class="card">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                             <h3>Déclarations TVA (CA3)</h3>
-                            <button class="btn btn-primary" onclick="showCreateDeclarationTVA()">+ Nouvelle Déclaration</button>
+                            <button class="btn btn-primary" onclick="openDeclarationTVAModal()">+ Nouvelle Déclaration</button>
                         </div>
-                        <div id="declarationsTVATable"></div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Période</th>
+                                    <th>TVA Collectée</th>
+                                    <th>TVA Déductible</th>
+                                    <th>TVA à Payer</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="declarationsTVATableBody"></tbody>
+                        </table>
                     </div>
                 </div>
 
